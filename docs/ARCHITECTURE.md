@@ -37,3 +37,13 @@ The toast coalesces a scan batch into one highlight plus a count. A maximum of t
 `npm run site` creates an interactive static demo from synthetic metrics. It cannot read local Codex logs and has no account or backend. It reuses the renderer with an explicit demo marker on the page and every share image.
 
 GitHub Actions validates pull requests, deploys the demo with Pages, and builds tagged cross-platform releases. There are no paid API services or server deployments in the project. Hosted platform quotas and policies still apply.
+
+## Medal growth and statistics
+
+Every achievement has Bronze, Silver and Gold requirements at 1×, 2× and 6× its declared thresholds. Existing v0.1 awards load as Bronze; qualifying upgrades append evidence without discarding the original unlock time. The cabinet displays progress toward the next medal. Hidden requirements remain masked until the first unlock.
+
+`analytics.mjs` aggregates deduplicated events by local date, model identifier, session, tool family and hour. It retains only public model-family labels, never custom model strings. Cache and reasoning counters are components of input/output, not additional total tokens. `Collector.rebuildAnalytics()` reads available logs into a fresh aggregate and preserves existing lifetime metrics and awards; the update is saved only after the rebuild succeeds. Statistics may cover less history than lifetime totals when older logs are unavailable.
+
+## Voluntary community sample
+
+`community.mjs` validates opt-in reports and aggregates cumulative medal counts. The client previews minimal reports locally and only opens GitHub after the user chooses to do so. Maintainer-approved issues drive an Actions workflow; the checked-in dataset contains aggregate counts only. Edits require new approval. The desktop has no fetch endpoint: sample updates arrive with releases or explicit file imports. See [the protocol](COMMUNITY.md) for identity disclosure, deduplication and withdrawal limitations.

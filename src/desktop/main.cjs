@@ -1,3 +1,4 @@
+const { randomBytes } = require('node:crypto');
 const {
   app,
   BrowserWindow,
@@ -76,10 +77,10 @@ function nextToast() {
   toastCurrent = toastQueue.shift();
   const area = screen.getDisplayNearestPoint(screen.getCursorScreenPoint()).workArea;
   toast.setBounds({
-    x: area.x + area.width - 440,
-    y: area.y + area.height - 166,
-    width: 420,
-    height: 146,
+    x: area.x + area.width - 620,
+    y: area.y + area.height - 174,
+    width: 600,
+    height: 154,
   });
   toast.webContents.send('tokengo:toast', toastCurrent);
   toast.showInactive();
@@ -91,11 +92,16 @@ function enqueue(awards, isDemo = false) {
   const chosen = [...awards].sort(
     (a, b) =>
       Number(b.hidden) - Number(a.hidden) ||
-      ['common', 'uncommon', 'rare', 'epic', 'legendary'].indexOf(b.rarity) -
-        ['common', 'uncommon', 'rare', 'epic', 'legendary'].indexOf(a.rarity),
+      ['bronze', 'silver', 'gold'].indexOf(b.rarity) -
+        ['bronze', 'silver', 'gold'].indexOf(a.rarity),
   )[0];
   if (chosen) {
-    toastQueue.push({ ...chosen, batch: awards.length, demo: isDemo });
+    toastQueue.push({
+      ...chosen,
+      batch: awards.length,
+      demo: isDemo,
+      language: runtime.engine.state.settings.language || 'en',
+    });
     if (toastQueue.length > 3) toastQueue = toastQueue.slice(-3);
     nextToast();
   }
@@ -146,7 +152,7 @@ app.whenReady().then(async () => {
       process.env.CODEX_HOME || path.join(os.homedir(), '.codex'),
     );
   } catch (error) {
-    dialog.showErrorBox('TokenGo · 记录保护', error.message);
+    dialog.showErrorBox('TokenGo · Record protection', error.message);
     app.quit();
     return;
   }
@@ -170,8 +176,8 @@ app.whenReady().then(async () => {
     }
   });
   toast = secureWindow({
-    width: 420,
-    height: 146,
+    width: 600,
+    height: 154,
     frame: false,
     transparent: true,
     resizable: false,
@@ -190,12 +196,12 @@ app.whenReady().then(async () => {
   trayImg.setTemplateImage(true);
   try {
     tray = new Tray(trayImg);
-    tray.setToolTip('TokenGo · 离线成就');
+    tray.setToolTip('TokenGo · Offline achievements');
     tray.setContextMenu(
       Menu.buildFromTemplate([
-        { label: '打开 TokenGo', click: () => main.show() },
+        { label: 'Open TokenGo', click: () => main.show() },
         {
-          label: '退出',
+          label: 'Quit',
           click: () => {
             quitting = true;
             app.quit();
@@ -223,6 +229,65 @@ app.whenReady().then(async () => {
 ipcMain.handle('tokengo:action', async (event, action, payload) => {
   if (event.sender !== main?.webContents) throw new Error('Untrusted sender');
   if (action === 'snapshot') return snapshot();
+  if (action === 'language') {
+    if (!['en', 'zh'].includes(payload)) throw new Error('Invalid language');
+    runtime.engine.state.settings.language = payload;
+    runtime.store.save(runtime.engine.state);
+    return snapshot();
+  }
+  if (action === 'analytics-rebuild') {
+    if (demo) throw new Error('Demo data cannot scan local logs.');
+    await runtime.collector.rebuildAnalytics();
+    update();
+    return snapshot();
+  }
+  if (action === 'community-report' || action === 'community-copy') {
+    if (demo) throw new Error('Demo achievements cannot contribute to the community sample.');
+    runtime.engine.state.settings.communityId ||= randomBytes(16).toString('hex');
+    runtime.store.save(runtime.engine.state);
+    const report = {
+      schema: 'tokengo-community-v1',
+      participant: runtime.engine.state.settings.communityId,
+      achievements: Object.values(runtime.engine.state.unlocked)
+        .filter((a) => a.source !== 'demo')
+        .map((a) => ({ id: a.id, level: a.level || 1 }))
+        .sort((a, b) => a.id.localeCompare(b.id)),
+    };
+    if (action === 'community-copy') {
+      clipboard.writeText(JSON.stringify(report, null, 2));
+      return true;
+    }
+    return report;
+  }
+  if (action === 'community-submit') {
+    if (demo) throw new Error('Demo reports cannot be submitted.');
+    await shell.openExternal(REPO + '/issues/new?template=community-sample.yml');
+    return true;
+  }
+  if (action === 'community-import') {
+    const result = await dialog.showOpenDialog(main, {
+      properties: ['openFile'],
+      filters: [{ name: 'Community sample', extensions: ['json'] }],
+    });
+    if (result.canceled) return null;
+    const size = (await fs.promises.stat(result.filePaths[0])).size;
+    if (size > 2 * 1024 * 1024) throw new Error('Sample file is too large');
+    const { validateRates } = await import(
+      pathToFileURL(path.join(ROOT, 'src/core/community.mjs')).href
+    );
+    const rates = validateRates(
+      JSON.parse(await fs.promises.readFile(result.filePaths[0], 'utf8')),
+      new Set(runtime.engine.catalog.map((a) => a.id)),
+    );
+    await fs.promises.writeFile(
+      path.join(runtime.store.directory, 'community-rates.json'),
+      JSON.stringify(rates),
+      { mode: 0o600 },
+    );
+    runtime.engine.community = rates;
+    update();
+    return snapshot();
+  }
   if (action === 'scan') {
     if (demo) return snapshot();
     return scan('history');
@@ -332,12 +397,14 @@ ipcMain.on('tokengo:toast-action', (event, action) => {
   if (event.sender !== toast?.webContents) return;
   if (action === 'pause') clearTimeout(toastTimer);
   if (action === 'resume') scheduleDismiss();
-  if (['open', 'share'].includes(action)) {
+  if (['open', 'x', 'reddit', 'other'].includes(action)) {
     main.show();
     main.webContents.send('tokengo:update', {
       ...snapshot(),
       openAchievement: toastCurrent?.id,
-      shareAchievement: action === 'share',
+      shareAchievement: action !== 'open',
+      sharePlatform: ['x', 'reddit'].includes(action) ? action : null,
+      previewAward: toastCurrent?.demo ? toastCurrent : null,
     });
     closeToast();
   }

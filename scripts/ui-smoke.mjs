@@ -53,37 +53,59 @@ try {
   });
   await page.goto(address);
   await page.waitForSelector('.achievement');
-  assert.equal(await page.locator('.achievement').count(), 24);
-  assert.ok((await page.locator('#banner').textContent()).includes('演示'));
+  assert.equal(await page.locator('.achievement').count(), 3);
+  assert.ok((await page.locator('#banner').textContent()).includes('demo'));
+  assert.equal(await page.locator('.cabinet-slot.filled').count(), 3);
+  assert.equal(await page.locator('.medal-levels').count(), 6);
   await mkdir('artifacts', { recursive: true });
   await mkdir('docs/screenshots', { recursive: true });
-  await page.screenshot({ path: 'artifacts/collection-full.png', fullPage: true });
   await page.screenshot({ path: 'docs/screenshots/collection.png' });
-  await page.locator('#search').fill('星河漫游');
-  assert.equal(await page.locator('.achievement').count(), 20);
-  await page.getByRole('button', { name: '秘密档案', exact: false }).first().click();
-  assert.ok((await page.locator('.achievement.locked').count()) > 0);
+  await page.locator('[data-category="tokens"]').click();
+  assert.equal(await page.locator('.achievement').count(), 12);
+  assert.ok(
+    (await page.locator('.community-rate').first().textContent()).includes('No community sample'),
+  );
+  await page.locator('#search').fill('impossible-query');
+  assert.equal(await page.locator('.achievement').count(), 0);
+  await page.locator('[data-view="hidden"]').click();
   await page.locator('.achievement.locked').first().click();
-  assert.equal(await page.locator('.detail-title').textContent(), '未发现的秘密');
+  assert.equal(await page.locator('.detail-title').textContent(), 'An undiscovered secret');
   assert.ok(!(await page.locator('.detail-conditions').textContent()).includes('gte'));
   await page.locator('#detail-dialog [data-close]').click();
-  await page.getByRole('button', { name: '我的展柜', exact: false }).first().click();
-  assert.equal(await page.locator('.cabinet-slot.filled').count(), 3);
-  await page.getByRole('button', { name: '分享展柜' }).click();
+  await page.locator('[data-view="collection"]').click();
+  await page.locator('[data-action="share-cabinet"]').click();
   await page.waitForTimeout(150);
-  assert.ok(await page.locator('#share-dialog').isVisible());
-  assert.ok((await page.locator('#share-text').inputValue()).startsWith('[演示]'));
+  assert.ok((await page.locator('#share-text').inputValue()).startsWith('[Demo]'));
   const data = await page.locator('#share-canvas').evaluate((c) => c.toDataURL());
   assert.ok(data.length > 30000);
-  await writeFile('artifacts/share-cabinet.png', Buffer.from(data.split(',')[1], 'base64'));
+  await writeFile('docs/screenshots/share.png', Buffer.from(data.split(',')[1], 'base64'));
   await page.locator('#share-dialog [data-close]').click();
-  await page.getByRole('button', { name: '预览成就弹卡' }).click();
-  assert.ok(await page.locator('.toast-card').isVisible());
-  await page.screenshot({ path: 'artifacts/toast.png' });
-  await page.locator('.toast-dismiss').click();
-  await page.getByRole('button', { name: '偏好设置', exact: false }).first().click();
-  assert.equal(await page.locator('.settings-panel').count(), 2);
-  await page.getByRole('button', { name: '成就图鉴', exact: false }).first().click();
+  await page.locator('#preview-toast').click();
+  await page.waitForTimeout(500);
+  assert.equal(await page.locator('.toast-platform').count(), 3);
+  assert.equal(await page.locator('.toast-eyebrow').count(), 0);
+  assert.ok((await page.locator('.toast-fact').textContent()).includes('12 hours'));
+  await page.locator('.toast-card').screenshot({ path: 'docs/screenshots/toast.png' });
+  await page.locator('.toast-open').click();
+  assert.ok(await page.locator('.focused-award').isVisible());
+  await page.locator('[data-view="statistics"]').first().click();
+  assert.equal(await page.locator('.chart-day').count(), 30);
+  await page.screenshot({ path: 'docs/screenshots/statistics.png' });
+  await page.locator('[data-stats-range="7"]').click();
+  assert.equal(await page.locator('.chart-day').count(), 7);
+  await page.locator('.chart-day').last().click();
+  assert.ok(await page.locator('[data-action="stats-reset-day"]').isVisible());
+  await page.locator('[data-view="collection"]').click();
+  await page.locator('#language').selectOption('zh');
+  assert.equal(await page.locator('html').getAttribute('lang'), 'zh-CN');
+  await page.locator('#language').selectOption('en');
+  assert.equal(await page.locator('html').getAttribute('lang'), 'en');
+  assert.equal(
+    await page
+      .locator('body')
+      .evaluate((el) => /[\p{Script=Han}]/u.test(el.innerText.replace('简体中文', ''))),
+    false,
+  );
   await page.setViewportSize({ width: 390, height: 844 });
   await page.screenshot({ path: 'artifacts/mobile.png', fullPage: true });
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);

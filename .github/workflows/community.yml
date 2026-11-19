@@ -1,0 +1,44 @@
+name: Update community sample
+on:
+  issues:
+    types: [labeled, unlabeled, edited, deleted]
+  workflow_dispatch:
+permissions:
+  contents: write
+  issues: write
+  actions: write
+concurrency:
+  group: community-sample
+  cancel-in-progress: false
+jobs:
+  aggregate:
+    if: github.event_name == 'workflow_dispatch' || github.event.label.name == 'community-approved' || contains(github.event.issue.labels.*.name, 'community-approved')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Require fresh approval after edits
+        if: github.event.action == 'edited' && contains(github.event.issue.labels.*.name, 'community-approved')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: gh api --method DELETE "repos/$GITHUB_REPOSITORY/issues/$ISSUE_NUMBER/labels/community-approved"
+      - run: node scripts/update-community.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Publish aggregate counts
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add community/rates.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Update voluntary community sample'
+          git push origin main
+      - name: Refresh static demo
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml

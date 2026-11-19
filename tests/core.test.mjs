@@ -21,7 +21,7 @@ test('1,224 unique achievements; locked secrets redact titles and conditions', (
   assert.equal(new Set(all.map((a) => a.id)).size, 1224);
   const e = new Engine(all);
   const secret = e.snapshot().achievements.find((a) => a.id === 'secrets.still-working');
-  assert.equal(secret.name, '未发现的秘密');
+  assert.equal(secret.name, 'An undiscovered secret');
   assert.equal(secret.conditions, undefined);
   assert.equal(secret.description.includes('120'), false);
 });

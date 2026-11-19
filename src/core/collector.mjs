@@ -1,6 +1,6 @@
 import { readdir, stat, open } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
-import { hash } from './engine.mjs';
+import { hash, Engine } from './engine.mjs';
 import { normalize } from './codex.mjs';
 
 async function filesIn(directory) {
@@ -27,6 +27,29 @@ export class Collector {
     this.home = resolve(codexHome);
     this.running = false;
     this.liveSince = Date.now();
+  }
+  async rebuildAnalytics() {
+    if (this.running) throw new Error('A scan is already running. Try again shortly.');
+    this.running = true;
+    try {
+      const working = new Engine(this.engine.catalog, structuredClone(this.engine.state));
+      const shadow = new Engine(this.engine.catalog);
+      const memoryStore = { sign: (value) => this.store.sign(value), save: () => {} };
+      const fresh = new Collector(shadow, memoryStore, this.home);
+      fresh.mirror = (event) => working.consume(event, 'history');
+      const result = await fresh.scan('history');
+      working.state.analytics = shadow.state.analytics;
+      working.state.analytics.rebuiltAt = new Date().toISOString();
+      working.state.analytics.legacy = false;
+      working.state.offsets = { ...working.state.offsets, ...shadow.state.offsets };
+      working.state.lastScan = shadow.state.lastScan;
+      this.store.save(working.state);
+      this.engine.state = working.state;
+      this.engine.pending = [];
+      return { ...result, awards: working.pending };
+    } finally {
+      this.running = false;
+    }
   }
   async scan(source = 'live') {
     if (this.running) return null;
@@ -78,6 +101,7 @@ export class Collector {
                 const origin =
                   source === 'live' && Date.parse(event.at) < this.liveSince ? 'history' : source;
                 result.events++;
+                if (this.mirror) this.mirror(event, origin);
                 result.awards.push(...this.engine.consume(event, origin));
               }
             }

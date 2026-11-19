@@ -1,19 +1,17 @@
 # Changelog
 
-## 0.1.0 — 2026-11-19
+## 0.2.0
 
-First public release of TokenGo.
+- A central six-slot trophy showcase with manual pinning and next-medal progress.
+- WoW-inspired domain navigation; achievement browsing is paginated in groups of 12.
+- Bronze, Silver and Gold growth for all 1,224 achievements, preserving existing awards.
+- A compact unlock card with a concrete earned condition and large X / Reddit / Other sharing buttons; card clicks return to the cabinet.
+- Local statistics: date filters, daily trends, input/output/cache breakdowns, model and tool usage, hourly activity and session tables. Existing installations can rebuild statistics without resetting achievements.
+- English default UI and README, with English / Simplified Chinese language switching.
+- Voluntary minimal community reports, public GitHub identity disclosure, maintainer approval and serverless aggregate sample rates. No invented global percentages or automatic uploads.
+- Expanded migration, aggregation, privacy and interaction tests.
 
-- Local Codex collector with incremental reads, persistent deduplication, cumulative token reconciliation, and conservative fork exclusion.
-- 1,200 public milestone tiers across 60 metric families, plus 24 authored hidden achievements.
-- Non-focusing bottom-right desktop unlock cards with hover pause, notification batching, quiet mode, and a tray companion.
-- Searchable achievement collection, hidden archive, six-slot trophy cabinet, history, and local settings.
-- Local PNG generation and explicit X / Reddit composer links. Demo images visibly labeled.
-- HMAC local state checks, award hash chain, content-free metrics and explicit trust limitations.
-- Declarative JSON achievement packs, MIT license, contribution guide, metric reference, and privacy/security documentation.
-- Static GitHub Pages demo and cross-platform GitHub Release builds with SHA-256 checksums.
-- Synthetic-fixture unit tests, browser interaction tests, and a native desktop smoke test.
+## 0.1.0
 
-### Known boundaries
-
-Early release: Chinese interface, unsigned community binaries, no cloud accounts or authoritative leaderboards. Compressed logs and forked sessions are not yet supported. Tool categories use heuristics. Activity duration may undercount runs with long gaps between log events. X/Reddit image upload and final publication remain user actions.
+- Initial local Codex collector, achievement engine, hidden achievements, desktop notifications, cabinet and PNG sharing.
+- Cross-platform community builds and a static demonstration gallery.

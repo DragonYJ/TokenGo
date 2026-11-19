@@ -67,7 +67,9 @@ try {
   const toast = app.windows().find((w) => w.url().endsWith('toast.html'));
   await page.evaluate(() => window.tokenGo.invoke('demo-toast'));
   await toast.waitForSelector('.toast-card');
-  assert.ok((await toast.locator('.toast-eyebrow').textContent()).includes('演示'));
+  assert.equal(await toast.locator('.toast-demo').textContent(), 'Demo');
+  assert.equal(await toast.locator('.toast-platform').count(), 3);
+  assert.ok((await toast.locator('.toast-fact').textContent()).includes('12 hours'));
   const nativeState = await app.evaluate(({ BrowserWindow }) => {
     const w = BrowserWindow.getAllWindows().find((w) =>
       w.webContents.getURL().endsWith('toast.html'),
@@ -105,13 +107,11 @@ try {
     JSON.stringify(live.metrics),
   );
   await toast.waitForFunction(
-    () =>
-      document.querySelector('.toast-eyebrow') &&
-      !document.querySelector('.toast-eyebrow').textContent.includes('演示'),
+    () => document.querySelector('.toast-card') && !document.querySelector('.toast-demo'),
   );
   await toast.locator('.toast-dismiss').click();
   await page.evaluate(() => window.tokenGo.invoke('quiet', true));
-  await page.getByRole('button', { name: '秘密档案', exact: false }).first().click();
+  await page.locator('[data-view="hidden"]').click();
   await page.locator('[data-achievement="secrets.first-spark"]').click();
   await page.locator('[data-action="share"]').click();
   await page.waitForTimeout(200);
@@ -139,6 +139,12 @@ try {
     (await readFile(join(store, 'state.json'), 'utf8')).includes('PRIVATE FIXTURE CONTENT'),
     false,
   );
+  const report = await page.evaluate(() => window.tokenGo.invoke('community-report'));
+  assert.deepEqual(Object.keys(report).sort(), ['achievements', 'participant', 'schema']);
+  assert.ok(report.achievements.length > 0);
+  const rebuilt = await page.evaluate(() => window.tokenGo.invoke('analytics-rebuild'));
+  assert.equal(rebuilt.metrics['tokens.total'], 1000000);
+  assert.ok(Object.keys(rebuilt.analytics.days).length > 0);
   assert.deepEqual(errors, []);
   console.log(
     'Desktop smoke passed: real fixture ingestion, persistent deduplication, sandbox/CSP, non-focusing native toast, live watcher, PNG export, explicit share URL. No real user logs read.',

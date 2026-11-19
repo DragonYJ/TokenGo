@@ -1,4 +1,4 @@
-# Contribute a little surprise / 贡献一点惊喜
+# Contribute a little surprise
 
 Contributions welcome: achievements, badge art, themes, translations, performance improvements, adapters, accessibility, and bug reports.
 
@@ -13,23 +13,25 @@ Contributions welcome: achievements, badge art, themes, translations, performanc
 {
   "id": "community",
   "version": 1,
-  "achievements": [{
-    "id": "community.clockwork",
-    "name": "精密时钟",
-    "description": "一个任务里，五十次工具调用环环相扣。",
-    "category": "tools",
-    "rarity": "rare",
-    "hidden": true,
-    "icon": "anvil",
-    "version": 1,
-    "conditions": [{"metric": "task.max_tools", "gte": 50}]
-  }]
+  "achievements": [
+    {
+      "id": "community.clockwork",
+      "name": "Clockwork",
+      "description": "Make 50 tool calls in one task.",
+      "category": "tools",
+      "rarity": "bronze",
+      "hidden": true,
+      "icon": "anvil",
+      "version": 1,
+      "conditions": [{ "metric": "task.max_tools", "gte": 50 }]
+    }
+  ]
 }
 ```
 
 Categories: `tokens`, `tasks`, `tools`, `exploration`, `time`, `code`, `creative`, `collaboration`, `hidden`.
 
-Rarities: `common`, `uncommon`, `rare`, `epic`, `legendary`. These are editorial tiers, **not population statistics**.
+Medals: `bronze`, `silver`, `gold`. Rules declare Bronze thresholds. The engine applies 1× / 2× / 6× to every condition for Bronze / Silver / Gold and records upgrades without revoking previous awards. These grades are **not population statistics**. All new packs should declare `rarity: "bronze"`.
 
 Icons: `trophy`, `spark`, `gem`, `hourglass`, `flame`, `compass`, `flag`, `orbit`, `anvil`, `book`, `feather`, `sun`, `link`, `terminal`, `branch`, `shield`, `box`, `globe`, `film`, `music`, `grid`, `rocket`, `lock`.
 
@@ -51,6 +53,12 @@ Networked leaderboards, account systems, and public profiles belong in **explici
 
 ## Development
 
-Node.js 22+, `npm ci`, `npm start`. `npm run demo` does not ingest logs. Tests do not access the developer's Codex history; use synthetic fixtures and temporary directories. Do not attach real session logs to issues.
+Node.js 22.12+, `npm ci`, `npm start`. `npm run demo` does not ingest logs. Tests do not access the developer's Codex history; use synthetic fixtures and temporary directories. Do not attach real session logs to issues.
 
 By contributing, you agree that your contributions are distributed under the repository's MIT license. Include attribution and compatible licenses for any third-party assets.
+
+## Localization and community rates
+
+English is the source language. Add translations in `src/ui/locales.js`; register languages in `src/ui/i18n.js`, the language selector and desktop IPC allowlist. Keep badge IDs stable across languages. Translate UI text and canvas copy; never translate metric identifiers or protocol keys.
+
+Community rates are optional self-reported sample statistics, not global rates. Follow [the protocol](docs/COMMUNITY.md). Do not introduce automatic uploads or identity-anonymous claims about public GitHub submissions.

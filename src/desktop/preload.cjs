@@ -1,6 +1,12 @@
 const { contextBridge, ipcRenderer } = require('electron');
 const allowed = new Set([
   'snapshot',
+  'language',
+  'analytics-rebuild',
+  'community-report',
+  'community-copy',
+  'community-submit',
+  'community-import',
   'scan',
   'watch',
   'quiet',
@@ -29,7 +35,7 @@ contextBridge.exposeInMainWorld('tokenGo', {
     return () => ipcRenderer.removeListener('tokengo:toast', fn);
   },
   toastAction: (action) => {
-    if (['close', 'open', 'share', 'pause', 'resume'].includes(action))
+    if (['close', 'open', 'x', 'reddit', 'other', 'pause', 'resume'].includes(action))
       ipcRenderer.send('tokengo:toast-action', action);
   },
 });

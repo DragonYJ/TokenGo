@@ -1,3 +1,4 @@
+import { knownModelLabel } from './analytics.mjs';
 import { hash } from './engine.mjs';
 const toolRules = {
   shell: /exec_command|shell|terminal|bash|write_stdin/,
@@ -71,7 +72,10 @@ export function normalize(record, context) {
     { ...common, kind, id: hash(`${context.session}:${kind}:${key}`), ...extra },
   ];
   if (record.type === 'turn_context')
-    return make('model', p.turn_id || at, { model: hash(String(p.model || 'unknown')) });
+    return make('model', p.turn_id || at, {
+      model: hash(String(p.model || 'unknown')),
+      modelLabel: knownModelLabel(p.model),
+    });
   if (record.type === 'compacted') return make('compaction', p.window_id || at);
   if (record.type === 'event_msg') {
     if (p.type === 'task_started') return make('start', p.turn_id || at);

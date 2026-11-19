@@ -1,17 +1,9 @@
 export const palette = {
-  common: ['#a8bdcc', '#435568'],
-  uncommon: ['#7bdbc5', '#287969'],
-  rare: ['#7fb8ff', '#365ba8'],
-  epic: ['#c7a2ff', '#784ca8'],
-  legendary: ['#ffe3a1', '#a7752b'],
+  bronze: ['#dca57b', '#825434'],
+  silver: ['#c4d7ea', '#637a93'],
+  gold: ['#ffe3a1', '#a7752b'],
 };
-export const rarityNames = {
-  common: '普通',
-  uncommon: '精良',
-  rare: '稀有',
-  epic: '史诗',
-  legendary: '传说',
-};
+export const rarityNames = { bronze: 'Bronze', silver: 'Silver', gold: 'Gold' };
 const paths = {
   trophy:
     'M21 17h22v13c0 9-5 14-11 14s-11-5-11-14V17Zm0 4H13v7c0 7 4 10 10 10m20-17h8v7c0 7-4 10-10 10M32 44v9m-9 0h18',
@@ -48,8 +40,8 @@ const paths = {
 export function glyph(icon = 'trophy', color = 'currentColor') {
   return `<svg viewBox="0 0 64 64" fill="none" stroke="${color}" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${paths[icon] || paths.trophy}"/></svg>`;
 }
-export function badge(icon = 'trophy', rarity = 'rare', locked = false) {
-  const [light, dark] = palette[rarity] || palette.rare;
+export function badge(icon = 'trophy', rarity = 'silver', locked = false) {
+  const [light, dark] = palette[rarity] || palette.silver;
   const color = locked ? '#647183' : light,
     shade = locked ? '#263141' : dark;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 156" fill="none" aria-hidden="true"><path d="m32 112-4 38 25-12 17 11 17-11 25 12-4-38" fill="${shade}" stroke="${color}" stroke-opacity=".25"/><path d="M70 5 123 34v61l-53 32-53-32V34L70 5Z" fill="${shade}" stroke="${color}" stroke-width="2"/><path d="m70 13 46 26v52l-46 28-46-28V39l46-26Z" fill="#111c2e" stroke="${color}" stroke-opacity=".4"/><path d="m70 21 38 22v44l-38 23-38-23V43l38-22Z" fill="${shade}" fill-opacity=".2"/><path d="m31 42 39-23 39 23M31 87l39 24 39-24" stroke="${color}" stroke-opacity=".3"/><g transform="translate(38 34)" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="${paths[locked ? 'lock' : icon] || paths.trophy}"/></g><path d="m70 116 3 5-3 5-3-5 3-5Z" fill="${color}"/></svg>`;

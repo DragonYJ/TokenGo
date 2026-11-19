@@ -28,3 +28,11 @@ The key is local, so a person controlling the machine can modify the code, forge
 - Unsigned desktop binaries require the user to make an explicit OS-level trust decision; no instructions disable global OS protections.
 
 Report suspected problems through a minimal, redacted issue or GitHub private vulnerability reporting when enabled. Do not publish live rollout files, keys, tokens, or private code.
+
+## Optional community contributions
+
+The default collection path remains entirely local. Community reports contain a random installation identifier and earned badge IDs/levels. Creating a preview or copying a report does not upload it. The user explicitly opens GitHub and submits it themselves; their GitHub account and report become public. The report is pseudonymous in structure, **not anonymous once submitted through an identified account**.
+
+The aggregation workflow treats issue content as untrusted JSON, validates exact fields against the catalog, requires a maintainer label, and executes repository code only. Edits invalidate approval. Published files contain aggregate counts, without account or installation identifiers. Reports and old GitHub revisions can remain public. Samples are voluntary, biased and self-reported, not a security boundary or certified population statistic.
+
+Daily statistics retain local dates, hour buckets, counts and pseudonymous session/model/project references. Public model-family labels may be stored; private model suffixes are discarded. Importing a community sample validates its shape and counts but cannot certify its origin.

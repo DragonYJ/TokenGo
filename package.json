@@ -1,11 +1,11 @@
 {
   "name": "tokengo",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Your work. Unexpected achievements. An offline-first achievement companion for Codex.",
   "type": "module",
   "main": "src/desktop/main.cjs",
   "license": "MIT",
-  "author": "TokenGo contributors",
+  "author": "dragony",
   "scripts": {
     "start": "electron .",
     "demo": "electron . --demo",
@@ -36,7 +36,8 @@
       "packs/**/*",
       "assets/**/*",
       "package.json",
-      "LICENSE"
+      "LICENSE",
+      "community/rates.json"
     ],
     "mac": {
       "category": "public.app-category.productivity",

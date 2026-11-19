@@ -1,3 +1,4 @@
+import { blankAnalytics, prepareAnalytics, account } from './analytics.mjs';
 import { createHash, createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import { mkdirSync, readFileSync, writeFileSync, renameSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -6,6 +7,7 @@ export const hash = (value) => createHash('sha256').update(String(value)).digest
 export function emptyState() {
   return {
     version: 1,
+    analytics: blankAnalytics(),
     metrics: {},
     sets: {},
     seen: {},
@@ -25,7 +27,9 @@ export class Store {
     this.file = join(directory, 'state.json');
     this.keyFile = join(directory, 'integrity.key');
     if (existsSync(this.file) && !existsSync(this.keyFile))
-      throw new IntegrityError('本地完整性密钥丢失。请恢复备份，或选择一个新的数据目录。');
+      throw new IntegrityError(
+        'Local integrity key is missing. Restore a backup or choose a new data directory.',
+      );
     if (!existsSync(this.keyFile))
       writeFileSync(this.keyFile, randomBytes(32), { mode: 0o600, flag: 'wx' });
     this.key = readFileSync(this.keyFile);
@@ -53,7 +57,7 @@ export class Store {
       return state;
     } catch {
       throw new IntegrityError(
-        '本地记录完整性校验失败，已停止采集。原文件保持不变，请恢复可信备份。',
+        'Local record integrity check failed. Collection stopped. Original files are preserved; restore a trusted backup.',
       );
     }
   }
@@ -68,6 +72,8 @@ export class Engine {
   constructor(catalog, state = emptyState()) {
     this.catalog = catalog;
     this.state = state;
+    if (!state.analytics)
+      state.analytics = { ...blankAnalytics(), legacy: Object.keys(state.seen).length > 0 };
     this.pending = [];
     this.dirty = new Set();
     this.index = new Map();
@@ -81,6 +87,7 @@ export class Engine {
     if (Number.isFinite(value) && value > 0) {
       this.state.metrics[key] = (this.state.metrics[key] || 0) + value;
       this.dirty.add(key);
+      account(this, key, value);
     }
   }
   maximum(key, value) {
@@ -122,6 +129,7 @@ export class Engine {
     });
     const at = new Date(timestamp),
       day = `${at.getFullYear()}-${String(at.getMonth() + 1).padStart(2, '0')}-${String(at.getDate()).padStart(2, '0')}`;
+    prepareAnalytics(this, event, s, day, at.getHours());
     this.distinct('days', day);
     if ([0, 6].includes(at.getDay())) this.distinct('weekends', day);
     const days = Object.keys(this.state.sets.days).sort();
@@ -207,17 +215,22 @@ export class Engine {
   ) {
     const awards = [];
     for (const a of candidates) {
-      if (
-        this.state.unlocked[a.id] ||
-        !a.conditions.every((c) => (this.state.metrics[c.metric] || 0) >= c.gte)
-      )
-        continue;
+      const previous = this.state.unlocked[a.id];
+      const multipliers = [1, 2, 6];
+      let level = 0;
+      multipliers.forEach((factor, index) => {
+        if (a.conditions.every((c) => (this.state.metrics[c.metric] || 0) >= c.gte * factor))
+          level = index + 1;
+      });
+      if (!level || level <= (previous ? previous.level || 1 : 0)) continue;
       const record = {
         id: a.id,
         at,
         source,
         version: a.version,
         evidence,
+        level,
+        firstUnlockedAt: previous?.firstUnlockedAt || previous?.at || at,
         values: a.conditions.map((c) => ({
           metric: c.metric,
           value: this.state.metrics[c.metric],
@@ -226,7 +239,12 @@ export class Engine {
       const body = { ...record, previous: this.state.journal.at(-1)?.digest || '0' };
       this.state.journal.push({ ...body, digest: hash(JSON.stringify(body)) });
       this.state.unlocked[a.id] = record;
-      awards.push({ ...a, ...record });
+      awards.push({
+        ...a,
+        ...record,
+        rarity: ['bronze', 'silver', 'gold'][level - 1],
+        conditions: a.conditions.map((c) => ({ ...c, gte: c.gte * multipliers[level - 1] })),
+      });
     }
     this.pending.push(...awards);
     return awards;
@@ -235,20 +253,29 @@ export class Engine {
     return {
       demo,
       metrics: this.state.metrics,
+      analytics: this.state.analytics,
+      community: this.community || { participants: 0, counts: {}, updatedAt: null },
       settings: this.state.settings,
       lastScan: this.state.lastScan,
       achievements: this.catalog.map((a) => {
-        const award = this.state.unlocked[a.id],
-          progress = Math.min(
-            ...a.conditions.map((c) => Math.min(1, (this.state.metrics[c.metric] || 0) / c.gte)),
-          );
+        const award = this.state.unlocked[a.id];
+        const level = award ? award.level || 1 : 0;
+        const factor = [1, 2, 6][Math.min(level, 2)];
+        const progress =
+          level === 3
+            ? 1
+            : Math.min(
+                ...a.conditions.map((c) =>
+                  Math.min(1, (this.state.metrics[c.metric] || 0) / (c.gte * factor)),
+                ),
+              );
         if (a.hidden && !award)
           return {
             id: a.id,
-            name: '未发现的秘密',
-            description: '继续你的旅程，惊喜会在某个瞬间出现。',
+            name: 'An undiscovered secret',
+            description: 'Keep exploring. Some surprises find you.',
             category: 'hidden',
-            rarity: a.rarity,
+            rarity: 'bronze',
             hidden: true,
             icon: 'lock',
             locked: true,
@@ -257,10 +284,17 @@ export class Engine {
         return {
           ...a,
           locked: !award,
+          rarity: ['bronze', 'silver', 'gold'][Math.max(0, level - 1)],
+          medalLevel: level,
+          nextMedal: level < 3 ? ['bronze', 'silver', 'gold'][level] : null,
+          earnedConditions: award
+            ? a.conditions.map((c) => ({ ...c, gte: c.gte * [1, 2, 6][level - 1] }))
+            : [],
           progress,
           award,
           conditions: a.conditions.map((c) => ({
             ...c,
+            gte: c.gte * factor,
             current: this.state.metrics[c.metric] || 0,
           })),
         };
