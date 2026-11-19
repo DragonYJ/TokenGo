@@ -36,3 +36,9 @@ The default collection path remains entirely local. Community reports contain a 
 The aggregation workflow treats issue content as untrusted JSON, validates exact fields against the catalog, requires a maintainer label, and executes repository code only. Edits invalidate approval. Published files contain aggregate counts, without account or installation identifiers. Reports and old GitHub revisions can remain public. Samples are voluntary, biased and self-reported, not a security boundary or certified population statistic.
 
 Daily statistics retain local dates, hour buckets, counts and pseudonymous session/model/project references. Public model-family labels may be stored; private model suffixes are discarded. Importing a community sample validates its shape and counts but cannot certify its origin.
+
+## Local sidebar bridge
+
+The sidebar MCP server connects to the existing collector over a local Unix socket (a named pipe on Windows). It does not create a second record writer. A random access token is rotated when the collector starts; on Unix the token and socket use owner-only permissions. This protects against other local accounts, not malicious programs already running as the same user. No TCP listener is opened.
+
+Sidebar tools are declared app-only. Snapshots travel in UI-only `_meta` fields, with no model-visible `content` or `structuredContent`; the app never calls message or model-context update APIs. Its resource CSP allows no remote connection or resource domains. The host still controls its own application behavior and account connectivity. Outbound sharing actions are available only through explicit UI actions, and TokenGo never publishes a social post.

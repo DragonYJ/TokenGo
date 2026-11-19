@@ -4,18 +4,35 @@ Requires Node.js 22.12 or newer, npm, Git, and a graphical desktop session. macO
 
 ```sh
 npm install --global github:DragonYJ/TokenGo
-tokengo enable
+tokengo connect
 ```
 
-On macOS, `enable` installs a local companion that follows Codex automatically. On Windows and Linux, automatic following is not implemented yet; use `tokengo start --collect` for manual collection. The package is a CLI-installed companion. It does not register as a Codex marketplace plugin, modify Codex configuration, or inject UI into Codex. Codex can install it by following these commands. A local process provides native cards while Codex is running, even between agent turns.
+On macOS, `enable` installs a local companion that follows Codex automatically. On Windows and Linux, automatic following is not implemented yet; use `tokengo start --collect` for manual collection. The `connect` command registers TokenGo as a local Codex marketplace plugin through the official CLI, then starts collection. It does not modify the Codex application binary. Set `TOKENGO_CODEX_BIN` if the CLI cannot be found. The plugin uses bundled Node code and a local stdio MCP connection; it has no remote MCP endpoint. A local process provides native cards while Codex is running, even between agent turns.
 
 ## What installation does
 
 1. npm installs TokenGo's public source from GitHub. There are no TokenGo install hooks, no production dependencies, and no collection during installation.
 2. The first `start` or `open` downloads Electron, pinned to the version in `package.json`, using npm and Electron's official release archives. Downloads are verified against Electron's published SHA-256 checksums; cached archives are reused. The launcher uses curl when available, with a bounded download timeout, and native extraction on macOS. Its runtime is stored in `~/.cache/tokengo/electron-VERSION`. A development checkout reuses its matching Electron dependency.
-3. TokenGo starts as a separate process. `--collect` explicitly enables local collection; `open` preserves the existing preference. Closing the cabinet leaves the tray process running. Quit stops it. Automatic login startup is currently supported by the standalone packaged app. With the GitHub CLI installation, run `tokengo open` after restarting your computer.
+3. TokenGo starts as a separate process. `--collect` explicitly enables local collection; `open` preserves the existing preference. Closing the cabinet leaves the tray process running. Quit stops it. On macOS, `enable` or `connect` installs the user-level follow service, which also survives logout/restart. Manual `start` does not install that service.
 
 Downloads contact GitHub and the npm registry, which can see ordinary request metadata such as your IP address. No Codex records are uploaded. Once installed, collection, notifications, statistics and card generation work offline. No account or paid backend is required.
+
+## Sidebar plugin
+
+Open TokenGo from the Plugins Directory or the sidebar menu, then pin its entry. Pinning and ordering are controlled by Codex. Restart the client if its entry list is stale. The installed plugin ID is `tokengo@tokengo`.
+
+The plugin and notification helper must both be version 0.4.0 or newer. The helper is the only record writer. The plugin accesses it using a local authenticated socket; it never reads the Codex log directory directly. All UI assets and dependencies are bundled.
+
+A successful first UI connection enables native notification deep links into Codex. Until then, notification clicks use the companion cabinet. To remove the sidebar plugin, run `tokengo disconnect` while the collector is running. This resets notification routing to the local cabinet, removes the plugin through the Codex CLI, and preserves records. Then run `tokengo disable` if you also want to stop collection.
+
+For Git-only marketplace setup after preparing the local collector:
+
+```sh
+codex plugin marketplace add DragonYJ/TokenGo
+codex plugin add tokengo@tokengo
+```
+
+Local marketplace installation does not require publication to the universal plugin directory. `connect` registers the installed npm package as the local marketplace, so keep that package installed. Clearing an npx cache or moving a checkout can break its stored paths; rerun setup from a stable installation.
 
 ## Following Codex on macOS
 
@@ -30,6 +47,7 @@ Use `tokengo status` to inspect the service and `tokengo disable` to unload and 
 ## Commands
 
 ```sh
+tokengo connect                 # Install sidebar plugin and start local collection
 tokengo enable                  # macOS: follow Codex silently
 tokengo disable                 # Remove automatic following
 tokengo status                  # Inspect the service

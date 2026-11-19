@@ -36,26 +36,28 @@ The achievement cabinet takes its cues from Steam and World of Warcraft: a colle
 
 Tell Codex:
 
-> Install TokenGo from https://github.com/DragonYJ/TokenGo using its README, then enable automatic collection whenever Codex is open on macOS. Keep my data on this computer.
+> Install TokenGo from https://github.com/DragonYJ/TokenGo using its README, then connect its sidebar plugin and enable automatic collection whenever Codex is open on macOS. Keep my data on this computer.
 
-Or run these commands (Node.js 22.12+ and Git required):
+Or run these commands (Node.js 22.12+, Git, and a Codex client with plugin support required):
 
 ```sh
 npm install --global github:DragonYJ/TokenGo
-tokengo enable
+tokengo connect
 ```
 
-**On macOS, TokenGo follows Codex.** `enable` prepares the notification runtime and installs a user-level login service. While Codex is open, collection starts silently: no cabinet window and no Dock icon. Quit Codex and collection stops, normally within five seconds. Click an unlock card or use the tray to open your cabinet. A small local observer remains idle between Codex sessions; it never uploads data. No installer wizard or app dragging.
+**Open TokenGo from the Codex sidebar.** `connect` installs the bundled local MCP plugin. Find TokenGo in Plugins or the sidebar menu, open it, and pin it. If the client has not refreshed its plugins, restart Codex. The cabinet and statistics stay inside Codex; opening the plugin successfully enables native notification links back into it.
+
+**On macOS, TokenGo follows Codex.** Setup prepares the notification runtime and installs a user-level login service. While Codex is open, collection starts silently: no cabinet window and no Dock icon. Quit Codex and collection stops, normally within five seconds. Click an unlock card or use the tray to open your cabinet. A small local observer remains idle between Codex sessions; it never uploads data. No installer wizard or app dragging.
 
 Automatic following currently supports macOS. On Windows and Linux, use `tokengo start --collect` for manual startup.
 
 For a one-command macOS setup without a global command:
 
 ```sh
-npx --yes --package=github:DragonYJ/TokenGo tokengo enable
+npx --yes --package=github:DragonYJ/TokenGo tokengo connect
 ```
 
-This uses npm's cache; use the global install for a lasting integration. Clearing that cache requires running setup again. To open the cabinet, run `tokengo open`. To stop automatic following, run `tokengo disable`. Before updating or uninstalling, disable following and quit TokenGo. After updating, run `tokengo enable` again. Remove the command with `npm uninstall --global tokengo`; your records are preserved. See [installation and troubleshooting](docs/INSTALL.md).
+This uses npm's cache; use the global install for a lasting integration. Clearing that cache requires running setup again. To open the cabinet, run `tokengo open`. To stop automatic following, run `tokengo disable`. Before updating, disable following and quit TokenGo. Before fully uninstalling, run `tokengo disconnect` while the collector is running, then `tokengo disable` and quit TokenGo. After updating, run `tokengo connect` again to refresh the plugin and collector. Remove the command with `npm uninstall --global tokengo`; your records are preserved. See [installation and troubleshooting](docs/INSTALL.md).
 
 Prefer a standalone app without Node.js? [Desktop downloads](https://github.com/DragonYJ/TokenGo/releases/latest) remain available for macOS, Windows and Linux.
 
@@ -80,6 +82,8 @@ npm test               # Rules, deduplication, migration, privacy and sample val
 npm run validate       # Validate every achievement pack
 npm run test:ui        # Browser interactions, PNG cards and responsive layout
 npm run test:desktop   # Native Electron flow using synthetic logs
+npm run build:plugin   # Bundle the offline MCP sidebar plugin
+npm run test:mcp       # MCP + embedded UI + native deep-link integration
 npm run build          # Package for your current operating system
 npm run site           # Build the static demo in dist/site
 ```

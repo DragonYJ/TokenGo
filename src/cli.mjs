@@ -3,7 +3,15 @@ import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { runtime } from './core/runtime.mjs';
 const command = process.argv[2];
-if (['enable', 'disable', 'status'].includes(command)) {
+if (command === 'connect' || command === 'disconnect') {
+  try {
+    const { connectSidebar, disconnectSidebar } = await import('./launcher/connect.mjs');
+    await (command === 'connect' ? connectSidebar() : disconnectSidebar());
+  } catch (error) {
+    console.error(`TokenGo: ${error.message}`);
+    process.exitCode = 1;
+  }
+} else if (['enable', 'disable', 'status'].includes(command)) {
   try {
     const { configure } = await import('./launcher/follow.mjs');
     await configure(command);
@@ -25,6 +33,8 @@ if (['enable', 'disable', 'status'].includes(command)) {
       `TokenGo — local achievements for Codex
 
   tokengo start --collect   Open the cabinet and enable local collection
+  tokengo connect          Install the Codex sidebar plugin and enable collection
+  tokengo disconnect       Remove sidebar integration; keep records and collection
   tokengo enable           Follow Codex automatically (macOS)
   tokengo disable          Stop following Codex
   tokengo status           Inspect the follow service

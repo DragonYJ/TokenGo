@@ -1,6 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron');
 const allowed = new Set([
   'snapshot',
+  'pins',
   'language',
   'analytics-rebuild',
   'community-report',

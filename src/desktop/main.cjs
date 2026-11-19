@@ -31,6 +31,13 @@ let main,
   quitting = false,
   suspended = false;
 let toastQueue = [];
+let stopBridge;
+let actionQueue = Promise.resolve();
+function dispatchAction(action, payload) {
+  const result = actionQueue.then(() => handleAction(action, payload));
+  actionQueue = result.catch(() => {});
+  return result;
+}
 let collectionRequested = process.argv.includes('--collect');
 const background = process.argv.includes('--background');
 let followTimer;
@@ -94,7 +101,7 @@ async function localizeTray() {
   tray.setToolTip('TokenGo · ' + t('Offline achievements'));
   tray.setContextMenu(
     Menu.buildFromTemplate([
-      { label: t('Open TokenGo'), click: () => main.show() },
+      { label: t('Open TokenGo'), click: () => openCabinet() },
       {
         label: t('Quit'),
         click: () => {
@@ -104,6 +111,28 @@ async function localizeTray() {
       },
     ]),
   );
+}
+function openCabinet(award, action = 'open') {
+  if (!demo && !award?.demo && runtime.engine.state.settings.sidebarReady) {
+    const route = award?.id ? '/achievements/' + encodeURIComponent(award.id) : '/';
+    const query = action === 'open' ? '' : '?share=1&platform=' + encodeURIComponent(action);
+    shell
+      .openExternal(
+        'codex://plugins/tokengo@tokengo/app/tokengo.cabinet?path=' +
+          encodeURIComponent(route + query),
+      )
+      .catch(() => main?.show());
+    return;
+  }
+  main.show();
+  if (award)
+    main.webContents.send('tokengo:update', {
+      ...snapshot(),
+      openAchievement: award.id,
+      shareAchievement: action !== 'open',
+      sharePlatform: ['x', 'reddit'].includes(action) ? action : null,
+      previewAward: award.demo ? award : null,
+    });
 }
 function snapshot() {
   return {
@@ -253,7 +282,7 @@ app.whenReady().then(async () => {
   try {
     tray = new Tray(trayImg);
     await localizeTray();
-    tray.on('click', () => main.show());
+    tray.on('click', () => openCabinet());
   } catch {}
   powerMonitor.on('suspend', () => {
     suspended = true;
@@ -267,12 +296,39 @@ app.whenReady().then(async () => {
   });
   timer = setInterval(() => {
     if (!demo && !suspended && runtime.engine.state.settings.watching)
-      scan('live').catch((e) => update({ error: e.message }));
+      actionQueue = actionQueue
+        .then(() => {
+          if (!demo && !suspended && runtime.engine.state.settings.watching) return scan('live');
+        })
+        .catch((e) => update({ error: e.message }));
   }, 5000);
+  const { serveBridge } = await import(pathToFileURL(path.join(ROOT, 'src/mcp/bridge.mjs')).href);
+  stopBridge = await serveBridge(dispatchAction);
 });
-ipcMain.handle('tokengo:action', async (event, action, payload) => {
+ipcMain.handle('tokengo:action', (event, action, payload) => {
   if (event.sender !== main?.webContents) throw new Error('Untrusted sender');
+  return dispatchAction(action, payload);
+});
+async function handleAction(action, payload) {
   if (action === 'snapshot') return snapshot();
+  if (action === 'sidebar-ready' || action === 'sidebar-reset') {
+    runtime.engine.state.settings.sidebarReady = action === 'sidebar-ready';
+    runtime.store.save(runtime.engine.state);
+    return true;
+  }
+  if (action === 'pins') {
+    if (
+      !Array.isArray(payload) ||
+      payload.length > 6 ||
+      new Set(payload).size !== payload.length ||
+      payload.some((id) => typeof id !== 'string' || !runtime.engine.state.unlocked[id])
+    )
+      throw new Error('Invalid pinned achievements');
+    runtime.engine.state.settings.pins = payload;
+    runtime.store.save(runtime.engine.state);
+    update();
+    return snapshot();
+  }
   if (action === 'language') {
     const { isSupportedLanguage } = await import(
       pathToFileURL(path.join(ROOT, 'src/ui/languages/registry.js')).href
@@ -447,20 +503,13 @@ ipcMain.handle('tokengo:action', async (event, action, payload) => {
     return false;
   }
   throw new Error('Unknown action');
-});
+}
 ipcMain.on('tokengo:toast-action', (event, action) => {
   if (event.sender !== toast?.webContents) return;
   if (action === 'pause') clearTimeout(toastTimer);
   if (action === 'resume') scheduleDismiss();
   if (['open', 'x', 'reddit', 'other'].includes(action)) {
-    main.show();
-    main.webContents.send('tokengo:update', {
-      ...snapshot(),
-      openAchievement: toastCurrent?.id,
-      shareAchievement: action !== 'open',
-      sharePlatform: ['x', 'reddit'].includes(action) ? action : null,
-      previewAward: toastCurrent?.demo ? toastCurrent : null,
-    });
+    openCabinet(toastCurrent, action);
     closeToast();
   }
   if (action === 'close') closeToast();
@@ -470,6 +519,7 @@ app.on('before-quit', () => {
   clearInterval(timer);
   clearInterval(followTimer);
   clearTimeout(toastTimer);
+  stopBridge?.();
 });
 // A follow service owns this process and stops it when Codex exits.
 process.on('SIGTERM', () => app.quit());

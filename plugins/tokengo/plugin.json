@@ -1,0 +1,19 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "tokengo",
+  "version": "0.4.0",
+  "description": "Your local Codex achievements, showcase and usage statistics in the sidebar.",
+  "author": { "name": "dragony" },
+  "license": "MIT",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "TokenGo",
+        "shortDescription": "Local achievements for Codex",
+        "developerName": "dragony",
+        "category": "Productivity",
+        "logo": "./icon.svg"
+      }
+    }
+  }
+}

@@ -61,6 +61,7 @@ const earned = () => state.achievements.filter((a) => !a.locked);
 const pinsKey = () => `tokengo.pins.${state.demo ? 'demo' : 'local'}`;
 function pins() {
   try {
+    if (!state.demo && Array.isArray(state.settings.pins)) return state.settings.pins;
     return JSON.parse(localStorage.getItem(pinsKey()) || '[]').filter((id) =>
       state.achievements.some((a) => a.id === id && !a.locked),
     );
@@ -297,7 +298,7 @@ function showDetail(id) {
   translateDOM($('#detail-dialog'));
   if (!$('#detail-dialog').open) $('#detail-dialog').showModal();
 }
-function togglePin(id) {
+async function togglePin(id) {
   let ids = pins();
   if (ids.includes(id)) ids = ids.filter((x) => x !== id);
   else {
@@ -307,7 +308,11 @@ function togglePin(id) {
     }
     ids.push(id);
   }
-  localStorage.setItem(pinsKey(), JSON.stringify(ids));
+  if (desktop && !state.demo) {
+    const next = await invoke('pins', ids);
+    if (!next) return;
+    state = next;
+  } else localStorage.setItem(pinsKey(), JSON.stringify(ids));
   render();
   if ($('#detail-dialog').open) showDetail(id);
   notify(ids.includes(id) ? 'Pinned to your showcase' : 'Removed from your showcase');
@@ -708,6 +713,7 @@ try {
       state = next;
       render();
       if (next.error) notify(next.error);
+      if (next.openView === 'statistics') go('statistics');
       if (next.openAchievement) {
         const a =
           next.previewAward || state.achievements.find((a) => a.id === next.openAchievement);

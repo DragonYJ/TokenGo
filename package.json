@@ -1,6 +1,6 @@
 {
   "name": "tokengo",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Local achievements for Codex. An offline cabinet, activity statistics and shareable cards.",
   "type": "module",
   "main": "src/desktop/main.cjs",
@@ -18,12 +18,17 @@
     "site": "node scripts/build-site.mjs",
     "test:ui": "npm run site && node scripts/ui-smoke.mjs",
     "test:desktop": "node scripts/desktop-smoke.mjs",
-    "test:install": "node scripts/install-smoke.mjs"
+    "test:install": "node scripts/install-smoke.mjs",
+    "build:plugin": "node scripts/build-plugin.mjs",
+    "test:mcp": "node scripts/mcp-smoke.mjs"
   },
   "devDependencies": {
+    "@modelcontextprotocol/ext-apps": "^1.7.5",
+    "@modelcontextprotocol/sdk": "^1.32.2",
     "@playwright/test": "^1.56.1",
     "electron": "45.3.4",
     "electron-builder": "^26.0.12",
+    "esbuild": "^0.28.2",
     "prettier": "^3.10.1"
   },
   "build": {
@@ -78,6 +83,8 @@
     "assets/",
     "community/rates.json",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "plugins/tokengo/",
+    ".agents/plugins/marketplace.json"
   ]
 }
