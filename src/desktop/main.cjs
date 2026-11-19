@@ -159,10 +159,10 @@ function nextToast() {
   toastCurrent = toastQueue.shift();
   const area = screen.getDisplayNearestPoint(screen.getCursorScreenPoint()).workArea;
   toast.setBounds({
-    x: area.x + area.width - 620,
-    y: area.y + area.height - 174,
-    width: 600,
-    height: 154,
+    x: area.x + area.width - 472,
+    y: area.y + area.height - 136,
+    width: 456,
+    height: 120,
   });
   toast.webContents.send('tokengo:toast', toastCurrent);
   toast.showInactive();
@@ -259,8 +259,8 @@ app.whenReady().then(async () => {
     }
   });
   toast = secureWindow({
-    width: 600,
-    height: 154,
+    width: 456,
+    height: 120,
     frame: false,
     transparent: true,
     resizable: false,

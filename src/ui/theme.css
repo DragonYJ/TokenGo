@@ -1113,3 +1113,143 @@ button {
 .mode[hidden] {
   display: none;
 }
+
+/* One short impact, then a quiet, compact card. */
+#web-toast {
+  width: 440px;
+}
+.toast-card,
+.toast-body .toast-card {
+  min-height: 104px;
+  height: 104px;
+  padding: 10px 12px;
+  gap: 10px;
+  border-radius: 9px;
+  border-left: 3px solid #b69a68;
+  transform-origin: right bottom;
+  animation: unlock-impact 460ms cubic-bezier(0.18, 0.8, 0.24, 1) both;
+}
+.toast-open {
+  gap: 10px;
+}
+.toast-badge,
+.toast-body .toast-badge {
+  width: 52px;
+  animation: medal-impact 480ms cubic-bezier(0.16, 0.8, 0.28, 1) both;
+}
+.toast-copy {
+  gap: 4px;
+}
+.toast-copy strong {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 18px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.toast-fact {
+  font-size: 11px;
+  line-height: 14px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.toast-demo,
+.toast-batch {
+  font-size: 10px;
+  line-height: 12px;
+}
+.toast-share-icons {
+  gap: 5px;
+  padding-left: 8px;
+  flex-shrink: 0;
+}
+.toast-platform,
+.toast-platform.reddit {
+  width: 32px;
+  height: 44px;
+  gap: 4px;
+  border-radius: 6px;
+}
+.toast-platform svg {
+  width: 19px;
+  height: 19px;
+}
+.toast-platform span {
+  font-size: 9px;
+  line-height: 11px;
+}
+.toast-dismiss {
+  top: 0;
+  right: 3px;
+  width: 20px;
+  height: 20px;
+  font-size: 14px;
+}
+.native-toast-progress {
+  background: #b69a68;
+  height: 2px;
+}
+@keyframes unlock-impact {
+  0% {
+    opacity: 0;
+    transform: translate(28px, 16px) scale(0.9);
+  }
+  38% {
+    opacity: 1;
+    transform: translate(-3px, -2px) scale(1.012);
+    border-color: #d5bc8e;
+  }
+  60% {
+    transform: translate(2px, 1px) scale(0.995);
+  }
+  80% {
+    transform: translate(-1px, 0) scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes medal-impact {
+  0%,
+  12% {
+    transform: scale(0.65) rotate(-12deg);
+  }
+  46% {
+    transform: scale(1.16) rotate(3deg);
+  }
+  70% {
+    transform: scale(0.96) rotate(-1deg);
+  }
+  100% {
+    transform: none;
+  }
+}
+@media (max-width: 400px) {
+  .toast-card {
+    padding-left: 8px;
+    gap: 7px;
+  }
+  .toast-badge {
+    width: 40px;
+  }
+  .toast-open {
+    gap: 7px;
+  }
+  .toast-share-icons {
+    padding-left: 6px;
+    gap: 3px;
+  }
+  .toast-platform,
+  .toast-platform.reddit {
+    width: 28px;
+  }
+  .toast-copy strong {
+    font-size: 12px;
+    line-height: 16px;
+  }
+}
