@@ -52,6 +52,11 @@ try {
     ).length,
     0,
   );
+  const emptyToast = app.windows().find((w) => w.url().endsWith('toast.html'));
+  await page.evaluate(() => window.tokenGo.invoke('demo-toast'));
+  await emptyToast.waitForSelector('.toast-demo');
+  assert.equal(await emptyToast.locator('.toast-demo').textContent(), 'Demo');
+  await emptyToast.locator('.toast-dismiss').click();
   const scanned = await page.evaluate(() => window.tokenGo.invoke('scan'));
   assert.equal(scanned.metrics['tokens.total'], 1000000);
   assert.equal(scanned.metrics['tasks.completed'], 1);
@@ -67,9 +72,9 @@ try {
   const toast = app.windows().find((w) => w.url().endsWith('toast.html'));
   await page.evaluate(() => window.tokenGo.invoke('demo-toast'));
   await toast.waitForSelector('.toast-card');
-  assert.equal(await toast.locator('.toast-demo').textContent(), 'Demo');
+  assert.equal(await toast.locator('.toast-demo').count(), 0); // Real earned badges preview without demo copy.
   assert.equal(await toast.locator('.toast-platform').count(), 3);
-  assert.ok((await toast.locator('.toast-fact').textContent()).includes('12 hours'));
+  assert.ok((await toast.locator('.toast-fact').textContent()).length > 0);
   const nativeState = await app.evaluate(({ BrowserWindow }) => {
     const w = BrowserWindow.getAllWindows().find((w) =>
       w.webContents.getURL().endsWith('toast.html'),
@@ -142,6 +147,19 @@ try {
   const report = await page.evaluate(() => window.tokenGo.invoke('community-report'));
   assert.deepEqual(Object.keys(report).sort(), ['achievements', 'participant', 'schema']);
   assert.ok(report.achievements.length > 0);
+  assert.ok(!(await page.locator('#share-text').inputValue()).includes('[Demo]'));
+  await page.locator('#share-dialog [data-close]').click();
+  for (const code of ['ja', 'ko', 'es', 'fr', 'de', 'pt']) {
+    const language = await page.evaluate((code) => window.tokenGo.invoke('language', code), code);
+    assert.equal(language.settings.language, code);
+  }
+  await page.evaluate(() => window.tokenGo.invoke('demo-toast'));
+  await toast.waitForSelector('.toast-card');
+  await toast.waitForFunction(() => document.documentElement.lang === 'pt-BR');
+  assert.equal(await toast.locator('.toast-platform.other span').textContent(), 'Mais');
+  assert.equal(await toast.locator('html').getAttribute('lang'), 'pt-BR');
+  await toast.locator('.toast-dismiss').click();
+  await page.evaluate(() => window.tokenGo.invoke('language', 'en'));
   const rebuilt = await page.evaluate(() => window.tokenGo.invoke('analytics-rebuild'));
   assert.equal(rebuilt.metrics['tokens.total'], 1000000);
   assert.ok(Object.keys(rebuilt.analytics.days).length > 0);

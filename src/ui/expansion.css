@@ -825,3 +825,81 @@
     gap: 12px;
   }
 }
+/* Let translated copy grow without widening the cabinet or share controls. */
+.page-heading h1,
+.cabinet-slot strong,
+.achievement h3,
+.featured h3 {
+  overflow-wrap: anywhere;
+}
+.toast-copy strong {
+  overflow-wrap: anywhere;
+  font-size: 15px;
+}
+.share-actions {
+  flex-wrap: wrap;
+}
+#language {
+  max-width: 125px;
+}
+@media (max-width: 760px) {
+  .top-actions {
+    gap: 6px;
+  }
+  #language {
+    max-width: 82px;
+  }
+  .statistics-heading h1 {
+    overflow-wrap: anywhere;
+  }
+  .section-header {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .statistics-toolbar {
+    align-items: flex-start;
+  }
+  .period-tabs {
+    flex-wrap: wrap;
+  }
+  .analytics-panel .section-header {
+    align-items: flex-start;
+  }
+  .metric-card {
+    min-width: 0;
+  }
+  .metric-card > span {
+    max-width: calc(100% - 18px);
+    overflow-wrap: anywhere;
+  }
+  .metric-card small {
+    overflow-wrap: anywhere;
+  }
+  .toast-copy strong {
+    font-size: 12px;
+  }
+}
+.cabinet-slot {
+  min-width: 0;
+}
+.medal-levels {
+  flex-wrap: wrap;
+  white-space: normal;
+}
+.medal-levels > span {
+  white-space: nowrap;
+}
+@media (max-width: 760px) {
+  .cabinet-slots {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .cabinet-slot small {
+    overflow-wrap: anywhere;
+  }
+  .showcase-medal {
+    min-width: 0;
+  }
+  .cabinet-slot .medal-levels {
+    gap: 4px;
+  }
+}

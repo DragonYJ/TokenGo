@@ -1,10 +1,13 @@
+import { formatLocale } from './i18n.js';
 const esc = (s) =>
   String(s ?? '').replace(
     /[&<>"']/g,
     (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c],
   );
 const short = (n) =>
-  new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 }).format(n || 0);
+  new Intl.NumberFormat(formatLocale(), { notation: 'compact', maximumFractionDigits: 1 }).format(
+    n || 0,
+  );
 const dateKey = (date) =>
   `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 const sum = (target, values) => {
@@ -81,7 +84,7 @@ function dailyChart(data, metric, selectedDay) {
   return `<div class="daily-chart" role="group" aria-label="Daily activity chart"><div class="chart-scale"><span>${short(max)}</span><span>${short(max / 2)}</span><span>0</span></div><div class="chart-bars">${data.series
     .map((d) => {
       const n = d.totals[metric] || 0;
-      return `<button class="chart-day ${selectedDay === d.day ? 'selected' : ''}" data-stats-day="${d.day}" aria-label="${d.day}: ${n.toLocaleString('en-US')} ${metric === 'tokens.total' ? 'tokens' : 'tasks'}" title="${d.day} · ${n.toLocaleString('en-US')}"><span style="height:${Math.max(n ? 2 : 0, (100 * n) / max)}%"></span></button>`;
+      return `<button class="chart-day ${selectedDay === d.day ? 'selected' : ''}" data-stats-day="${d.day}" aria-label="${d.day}: ${n.toLocaleString(formatLocale())} ${metric === 'tokens.total' ? 'tokens' : 'tasks'}" title="${d.day} · ${n.toLocaleString(formatLocale())}"><span style="height:${Math.max(n ? 2 : 0, (100 * n) / max)}%"></span></button>`;
     })
     .join(
       '',

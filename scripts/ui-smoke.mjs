@@ -96,14 +96,79 @@ try {
   await page.locator('.chart-day').last().click();
   assert.ok(await page.locator('[data-action="stats-reset-day"]').isVisible());
   await page.locator('[data-view="collection"]').click();
+  const localeInfo = {
+    en: 'en-US',
+    zh: 'zh-CN',
+    ja: 'ja-JP',
+    ko: 'ko-KR',
+    es: 'es-ES',
+    fr: 'fr-FR',
+    de: 'de-DE',
+    pt: 'pt-BR',
+  };
+  for (const [code, locale] of Object.entries(localeInfo)) {
+    await page.locator('#language').selectOption(code);
+    assert.equal(await page.locator('html').getAttribute('lang'), locale);
+    await page.locator('[data-view="statistics"]').first().click();
+    const heading = await page.locator('h1').textContent();
+    if (code !== 'en') assert.notEqual(heading, 'Your adventure, in numbers.');
+    const option = await page.locator('#stats-sort option').first().textContent();
+    if (code !== 'en') assert.notEqual(option, 'Most tokens');
+    await page.setViewportSize({ width: 390, height: 844 });
+    assert.equal(
+      await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+      true,
+      `statistics overflow: ${code}`,
+    );
+    await page.locator('[data-view="collection"]').click();
+    if (await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)) {
+      await page.screenshot({ path: `artifacts/overflow-${code}.png`, fullPage: true });
+      console.log(
+        await page.evaluate(() =>
+          [...document.querySelectorAll('body *')]
+            .filter((e) => e.getBoundingClientRect().right > innerWidth + 1)
+            .map((e) => ({
+              tag: e.tagName,
+              cls: e.className,
+              text: e.textContent.slice(0, 60),
+              right: e.getBoundingClientRect().right,
+            }))
+            .slice(-12),
+        ),
+      );
+    }
+    assert.equal(
+      await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+      true,
+      `cabinet overflow: ${code}`,
+    );
+    await page.setViewportSize({ width: 1440, height: 1040 });
+    if (code === 'ja' || code === 'de')
+      await page.screenshot({ path: `artifacts/cabinet-${code}.png` });
+    await page.locator('#preview-toast').click();
+    await page.waitForTimeout(500);
+    await page.locator('.toast-platform.other').click();
+    const caption = await page.locator('#share-text').inputValue();
+    assert.ok(caption.startsWith('['));
+    assert.ok(!caption.includes('.!'));
+    assert.ok(!caption.includes('\\'));
+    await page.locator('#share-dialog [data-close]').click();
+  }
+  await page.reload();
+  await page.waitForSelector('.cabinet-stage');
+  assert.equal(await page.locator('html').getAttribute('lang'), 'pt-BR');
   await page.locator('#language').selectOption('zh');
   assert.equal(await page.locator('html').getAttribute('lang'), 'zh-CN');
   await page.locator('#language').selectOption('en');
-  assert.equal(await page.locator('html').getAttribute('lang'), 'en');
+  assert.equal(await page.locator('html').getAttribute('lang'), 'en-US');
   assert.equal(
     await page
       .locator('body')
-      .evaluate((el) => /[\p{Script=Han}]/u.test(el.innerText.replace('简体中文', ''))),
+      .evaluate((el) =>
+        /[\p{Script=Han}]/u.test(
+          el.innerText.replace(document.querySelector('#language').innerText, ''),
+        ),
+      ),
     false,
   );
   await page.setViewportSize({ width: 390, height: 844 });

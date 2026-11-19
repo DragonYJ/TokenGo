@@ -1,3 +1,5 @@
+import { isDemoShare, shareTitle, shareCopy } from './share-copy.js';
+import { languages } from './languages/registry.js';
 import { renderStatistics } from './statistics.js';
 let statsOptions = { range: '30', metric: 'tokens.total', selectedDay: null, sort: 'tokens.total' };
 import { t, translateDOM, setLanguage, getLanguage, formatLocale } from './i18n.js';
@@ -12,6 +14,7 @@ const $ = (s) => document.querySelector(s),
 const desktop = Boolean(window.tokenGo),
   repo = 'https://github.com/DragonYJ/TokenGo';
 let cabinetFocus = null;
+let webToastTimer;
 let state,
   view = 'collection',
   tab = 'all',
@@ -251,7 +254,7 @@ function activity() {
   }${earned().length > 100 ? '<p class="muted">Showing your latest 100 unlocks. Export all records from Settings.</p>' : ''}`;
 }
 function settings() {
-  return `<div class="page-heading"><h1>Surprises, at your pace.</h1><p>No account needed. Nothing uploads automatically. You decide when to share.</p></div><section class="settings-panel"><h2>Background & notifications</h2><div class="setting-row"><div>Collect in the background<p>Incrementally checks Codex logs every 5 seconds. The tray companion can keep collecting when the window is closed.</p></div><label class="switch"><input id="watch-toggle" type="checkbox" aria-label="Collect in the background" ${state.settings.watching ? 'checked' : ''}></label></div><div class="setting-row"><div>Quiet mode<p>Keep collecting without popups. You can still preview a demo card.</p></div><label class="switch"><input id="quiet-toggle" type="checkbox" aria-label="Quiet mode" ${state.settings.quiet ? 'checked' : ''}></label></div><div class="setting-row"><div>Launch at login<p>Off by default. Enable after installing the packaged desktop app.</p></div><label class="switch"><input id="startup-toggle" type="checkbox" aria-label="Launch at login" ${state.startup ? 'checked' : ''}></label></div><div class="setting-row"><div>Unlock cards<p>Try your next aha moment. Demos never become real achievements.</p></div><button class="button secondary" data-action="preview">Preview card</button></div></section><section class="settings-panel"><h2>Records & trust</h2><div class="setting-row"><div>Discover past achievements<p>Read-only scan of local Codex logs. Historical discoveries are labeled and do not flood you with popups.</p></div><button class="button secondary" data-action="scan">Scan history</button></div><div class="setting-row"><div>Export achievements<p>Export badge IDs, unlock times and numeric evidence. No conversations, code, or paths.</p></div><button class="button secondary" data-action="export">Export JSON</button></div><div class="setting-row"><div>Local records, not official certification<p>Integrity checks detect basic edits. A device owner can still forge data; local badges are not certified competitive results.</p></div></div><div class="setting-row"><div>Latest scan<p>${state.lastScan ? `${new Date(state.lastScan.at).toLocaleString(formatLocale())} · ${state.lastScan.files} changed files · ${state.lastScan.events} normalized events · ${state.lastScan.forksSkipped} fork files skipped` : 'Your Codex logs have not been read. Scanning begins only when you choose to start.'}</p></div></div></section>`;
+  return `<div class="page-heading"><h1>Surprises, at your pace.</h1><p>No account needed. Nothing uploads automatically. You decide when to share.</p></div><section class="settings-panel"><h2>Background & notifications</h2><div class="setting-row"><div>Collect in the background<p>Incrementally checks Codex logs every 5 seconds. The tray companion can keep collecting when the window is closed.</p></div><label class="switch"><input id="watch-toggle" type="checkbox" aria-label="Collect in the background" ${state.settings.watching ? 'checked' : ''}></label></div><div class="setting-row"><div>Quiet mode<p>Keep collecting without popups.</p></div><label class="switch"><input id="quiet-toggle" type="checkbox" aria-label="Quiet mode" ${state.settings.quiet ? 'checked' : ''}></label></div><div class="setting-row"><div>Launch at login<p>Off by default. Enable after installing the packaged desktop app.</p></div><label class="switch"><input id="startup-toggle" type="checkbox" aria-label="Launch at login" ${state.startup ? 'checked' : ''}></label></div><div class="setting-row"><div>Unlock cards<p>Preview a card using an earned achievement. If none are available, a labeled example is shown.</p></div><button class="button secondary" data-action="preview">Preview card</button></div></section><section class="settings-panel"><h2>Records & trust</h2><div class="setting-row"><div>Discover past achievements<p>Read-only scan of local Codex logs. Historical discoveries are labeled and do not flood you with popups.</p></div><button class="button secondary" data-action="scan">Scan history</button></div><div class="setting-row"><div>Export achievements<p>Export badge IDs, unlock times and numeric evidence. No conversations, code, or paths.</p></div><button class="button secondary" data-action="export">Export JSON</button></div><div class="setting-row"><div>Local records, not official certification<p>Integrity checks detect basic edits. A device owner can still forge data; local badges are not certified competitive results.</p></div></div><div class="setting-row"><div>Latest scan<p>${state.lastScan ? `${new Date(state.lastScan.at).toLocaleString(formatLocale())} · ${state.lastScan.files} changed files · ${state.lastScan.events} normalized events · ${state.lastScan.forksSkipped} fork files skipped` : 'Your Codex logs have not been read. Scanning begins only when you choose to start.'}</p></div></div></section>`;
 }
 function community() {
   return `<section class="settings-panel"><h2>Community unlock rates</h2><p>${state.community?.participants || 0} voluntary participants. These are community sample rates, never global rates. Snapshot: ${state.community?.updatedAt ? new Date(state.community.updatedAt).toLocaleDateString(formatLocale()) : 'Not yet published'}.</p><p>Contribute only a random participant ID and earned badge IDs with medal levels. No prompts, code, usage totals or paths. GitHub submissions are public and linked to your GitHub account. Participation is optional; nothing is sent automatically.</p><button class="button" data-action="community-report" ${state.demo ? 'disabled' : ''}>Preview my contribution</button> <button class="button secondary" data-action="community-import" ${state.demo ? 'disabled' : ''}>Import sample file</button><pre id="community-preview" class="code-sample"></pre><div id="community-consent" hidden><label><input type="checkbox" id="consent-check"> I understand that my GitHub account and this report will be public.</label><p><button class="button secondary" data-action="community-copy">Copy report</button> <button class="button" data-action="community-submit">Open GitHub submission ↗</button></p><p>Paste and review the report on GitHub. You publish it yourself. Maintainer-approved reports are aggregated; reports are self-reported, not certified.</p></div></section><div class="page-heading"><h1>Dream up the next easter egg.</h1><p>An open workshop for unexpected achievements. Add a badge or build something of your own.</p></div><div class="community-grid"><article class="community-card"><span class="symbol">✧</span><h3>Contribute a badge</h3><p>A fun title and an observable rule. JSON packs need no engine changes and execute no arbitrary code.</p></article><article class="community-card"><span class="symbol">◇</span><h3>Make it look like you</h3><p>Design badge art, share cards and showcase themes. Every adventure can have its own look.</p></article><article class="community-card"><span class="symbol">⌘</span><h3>Build what comes next</h3><p>Write local adapters for other agents or explicitly opt-in community extensions.</p></article></div><section class="settings-panel" style="margin-top:24px"><div class="section-header"><h2>A badge starts here</h2><button class="button secondary" data-action="install">Join us on GitHub ↗</button></div><pre class="code-sample">${esc(JSON.stringify({ id: 'community.still-working', name: 'Still Grinding. I’m AFK.', description: 'Agent active run reached 2 hours.', category: 'hidden', rarity: 'bronze', hidden: true, icon: 'hourglass', conditions: [{ metric: 'run.max_minutes', gte: 120 }] }, null, 2))}</pre><p class="muted" style="font-size:12px;line-height:1.8">MIT licensed · Auditable rules · Built to extend<br>Share links point to the open-source project. No personal tracking codes. No paid server required.</p></section>`;
@@ -332,7 +335,7 @@ async function drawShare(awards) {
   ctx.fillStyle = '#9fb0c7';
   ctx.font = '18px -apple-system, sans-serif';
   ctx.fillText(
-    state.demo || awards.some((a) => a.demo || a.award?.source === 'demo')
+    isDemoShare(awards, state.demo)
       ? 'Demo achievement · sample data'
       : 'Local record · not officially certified',
     60,
@@ -423,6 +426,7 @@ async function showShare(awards) {
   translateDOM($('#share-dialog'));
 }
 function webToast() {
+  clearTimeout(webToastTimer);
   const found = state.achievements.find((a) => a.id === 'secrets.still-working' && !a.locked);
   const a = {
     ...(found || {
@@ -439,12 +443,13 @@ function webToast() {
   $('#web-toast').innerHTML = toastMarkup(a);
   translateDOM($('#web-toast'));
   const hide = () => {
+    clearTimeout(webToastTimer);
     $('#web-toast').innerHTML = '';
   };
-  let timer = setTimeout(hide, 6500);
-  $('#web-toast').onmouseenter = () => clearTimeout(timer);
+  webToastTimer = setTimeout(hide, 6500);
+  $('#web-toast').onmouseenter = () => clearTimeout(webToastTimer);
   $('#web-toast').onmouseleave = () => {
-    timer = setTimeout(hide, 6500);
+    if ($('#web-toast .toast-card')) webToastTimer = setTimeout(hide, 6500);
   };
   $('.toast-dismiss').onclick = hide;
   $('.toast-open').onclick = () => {
@@ -458,14 +463,17 @@ function webToast() {
         const platform = button.dataset.platform;
         hide();
         if (platform !== 'other')
-          invoke('share', { platform, text: shareCaption([a]), title: `TokenGo: ${t(a.name)}` });
+          invoke('share', {
+            platform,
+            text: shareCaption([a]),
+            title: shareTitle([a], state.demo),
+          });
         showShare([a]);
       }),
   );
 }
 function shareCaption(awards) {
-  const demo = state.demo || awards.some((a) => a.demo || a.award?.source === 'demo');
-  return `${demo ? '[Demo] ' : ''}${t('Achievement unlocked')}: ${awards.map((a) => t(a.name)).join(', ')}!\n${awards.length === 1 ? t(achievementFact(awards[0])) : t('This is my adventure.')}\n${t('What is your Codex hiding?')}\n${repo}`;
+  return shareCopy(awards, state.demo, repo);
 }
 document.addEventListener('click', async (event) => {
   const target = event.target.closest('button');
@@ -668,7 +676,7 @@ for (const platform of ['x', 'reddit'])
     invoke('share', {
       platform,
       text: $('#share-text').value,
-      title: `${state.demo ? '[Demo] ' : ''}My TokenGo achievement: ${sharing.map((a) => a.name).join(', ')}`,
+      title: shareTitle(sharing, state.demo),
     });
 document.querySelectorAll('dialog').forEach((d) =>
   d.addEventListener('click', (e) => {
@@ -688,6 +696,9 @@ try {
       pinsKey(),
       JSON.stringify(['secrets.still-working', 'secrets.returning', 'secrets.million']),
     );
+  $('#language').innerHTML = Object.entries(languages)
+    .map(([code, meta]) => `<option value="${code}">${meta.name}</option>`)
+    .join('');
   setLanguage(state.settings.language || localStorage.getItem('tokengo.language') || 'en');
   render();
   if (desktop)
@@ -705,7 +716,7 @@ try {
               await invoke('share', {
                 platform: next.sharePlatform,
                 text: $('#share-text').value,
-                title: `TokenGo: ${t(a.name)}`,
+                title: shareTitle([a], state.demo),
               });
           } else {
             cabinetFocus = a;
@@ -719,5 +730,5 @@ try {
     });
 } catch (error) {
   $('#content').innerHTML =
-    `<div class="empty"><h3>Could not open your records</h3><p>${esc(error.message)}</p><p>Run npm start for the desktop app, or npm run site to build the demo.</p></div>`;
+    `<div class="empty"><h3>Could not open your records</h3><p>${esc(error.message)}</p><p>Restart TokenGo and try again.</p></div>`;
 }

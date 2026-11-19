@@ -267,8 +267,7 @@ export const zhCN = {
   minutes: '分钟',
   hours: '小时',
   days: '天',
-  'Page ': '第 ',
-  '': ' 页',
+  Page: '页',
   'Total ': '共 ',
   ' achievements': ' 枚成就',
   'In TokenGo, I ': '我在 TokenGo ',
@@ -509,4 +508,20 @@ Object.assign(zhCN, {
   'No categorized tool calls in this period.': '该时段没有已分类工具调用。',
   'No sessions yet. Start collecting or rebuild from local logs.':
     '暂无会话。请开启采集或从本地日志重建。',
+});
+Object.assign(zhCN, {
+  'Keep collecting without popups.': '继续收集成就，不显示弹卡。',
+  'Preview a card using an earned achievement. If none are available, a labeled example is shown.':
+    '使用已获得的成就预览卡片。尚无成就时，会显示明确标注的示例。',
+  Language: '语言',
+  'Filter medal level': '筛选奖章等级',
+  'All medals': '全部奖章',
+  'Could not finish:': '操作未完成：',
+  reached: '达到',
+});
+Object.assign(zhCN, {
+  'Open TokenGo': '打开 TokenGo',
+  Quit: '退出',
+  'Offline achievements': '离线成就',
+  'Restart TokenGo and try again.': '请重启 TokenGo 后重试。',
 });

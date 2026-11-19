@@ -1,6 +1,6 @@
 {
   "name": "tokengo",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Your work. Unexpected achievements. An offline-first achievement companion for Codex.",
   "type": "module",
   "main": "src/desktop/main.cjs",

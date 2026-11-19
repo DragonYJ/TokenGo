@@ -27,7 +27,7 @@ You came to ship a feature. Your agent disappeared into a twelve-hour quest. Som
 - **Tiny interruptions, big aha moments.** Bottom-right cards never take keyboard focus. Hover to pause. Click the card to return to your cabinet. Quiet mode is built in.
 - **Three ways to share.** Prominent X, Reddit and Other buttons lead to your next step. Generate a PNG and caption locally; you attach the image and publish the post yourself. Every card points back to TokenGo.
 - **Statistics with a story.** Daily trends, input/output/cache breakdowns, model families, tool categories, hourly activity and a session explorer. No billing credentials or external pricing calls.
-- **English by default, multilingual by design.** English and Simplified Chinese are included. Translations live in a small, editable dictionary.
+- **English by default, multilingual by design.** English, Simplified Chinese, Japanese, Korean, Spanish, French, German and Portuguese are included. Interface, built-in badge names, notifications and share copy use bundled offline translations.
 - **A community you can build on.** Add a JSON achievement pack, translate the interface, design a cabinet, or build your own extension. MIT licensed.
 
 ![Local activity statistics](docs/screenshots/statistics.png)
@@ -101,7 +101,7 @@ Current ingestion supports uncompressed `.jsonl` files in Codex's `sessions` and
 The best easter egg might be yours. A funny name, an observable moment, a tiny JSON rule — that is enough to start.
 
 - Add a milestone or a secret in `packs/`.
-- Add a language in `src/ui/locales.js` and `src/ui/i18n.js`.
+- Improve a language pack using the [localization guide](docs/LOCALIZATION.md).
 - Build a new cabinet, card style, local adapter or opt-in extension.
 - Share an idea or submit a PR using the [contribution guide](CONTRIBUTING.md).
 

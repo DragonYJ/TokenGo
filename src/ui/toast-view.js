@@ -1,3 +1,4 @@
+import { formatLocale } from './i18n.js';
 import { badge } from './badges.js';
 const escape = (s) =>
   String(s ?? '').replace(
@@ -35,7 +36,7 @@ export function achievementFact(a) {
       .map((c) => {
         if (c.metric === 'run.max_minutes')
           return `Agent active run reached ${c.gte % 60 === 0 ? `${c.gte / 60} hours` : `${c.gte} minutes`}`;
-        return `${labels[c.metric] || 'Related tool calls'} reached ${c.gte.toLocaleString('en-US')}${c.metric.startsWith('tool.') ? ' calls' : ''}`;
+        return `${labels[c.metric] || 'Related tool calls'} reached ${c.gte.toLocaleString(formatLocale())}${c.metric.startsWith('tool.') ? ' calls' : ''}`;
       })
       .join('，') || a.description
   );

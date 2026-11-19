@@ -59,6 +59,6 @@ By contributing, you agree that your contributions are distributed under the rep
 
 ## Localization and community rates
 
-English is the source language. Add translations in `src/ui/locales.js`; register languages in `src/ui/i18n.js`, the language selector and desktop IPC allowlist. Keep badge IDs stable across languages. Translate UI text and canvas copy; never translate metric identifiers or protocol keys.
+English is the source language. Translations live in `src/ui/locales.js` and `src/ui/languages/`. Register language metadata in `src/ui/languages/registry.js` and import the dictionary in `src/ui/i18n.js`; the language selector and desktop IPC share that registry. See [the localization guide](docs/LOCALIZATION.md). Keep badge IDs stable across languages. Translate UI text and canvas copy; never translate metric identifiers or protocol keys.
 
 Community rates are optional self-reported sample statistics, not global rates. Follow [the protocol](docs/COMMUNITY.md). Do not introduce automatic uploads or identity-anonymous claims about public GitHub submissions.

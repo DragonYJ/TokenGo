@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.0
+
+- Eight offline interface languages: English, Simplified Chinese, Japanese, Korean, Spanish, French, German and Portuguese. Includes built-in achievement names, statistics, settings, consent copy, notifications, tray menus and share text.
+- Locale-aware numbers and dates, translated select options, persistent language choice and responsive handling of longer labels.
+- Genuine achievement previews and sharing no longer carry demonstration copy. Fictional examples retain clear labels in every sharing entry point.
+- Removed duplicate share-caption punctuation and development commands from the load-error screen.
+- Fixed stale preview timers, empty translation keys and quiet-mode handling of manual previews.
+- Added locale coverage, caption-provenance, persistence and eight-language layout checks.
+
 ## 0.2.0
 
 - A central six-slot trophy showcase with manual pinning and next-medal progress.

@@ -52,6 +52,24 @@ function secureWindow(options) {
   win.webContents.on('will-navigate', (e) => e.preventDefault());
   return win;
 }
+async function localizeTray() {
+  if (!tray) return;
+  const { setLanguage, t } = await import(pathToFileURL(path.join(ROOT, 'src/ui/i18n.js')).href);
+  setLanguage(runtime.engine.state.settings.language || 'en');
+  tray.setToolTip('TokenGo · ' + t('Offline achievements'));
+  tray.setContextMenu(
+    Menu.buildFromTemplate([
+      { label: t('Open TokenGo'), click: () => main.show() },
+      {
+        label: t('Quit'),
+        click: () => {
+          quitting = true;
+          app.quit();
+        },
+      },
+    ]),
+  );
+}
 function snapshot() {
   return {
     ...(demo ? demoSnapshot() : runtime.engine.snapshot()),
@@ -86,8 +104,8 @@ function nextToast() {
   toast.showInactive();
   scheduleDismiss();
 }
-function enqueue(awards, isDemo = false) {
-  if (!isDemo && runtime.engine.state.settings.quiet) return;
+function enqueue(awards, isDemo = false, manual = false) {
+  if (!isDemo && !manual && runtime.engine.state.settings.quiet) return;
   // Celebrate a batch once; never flood the desktop with hundreds of tiers.
   const chosen = [...awards].sort(
     (a, b) =>
@@ -196,19 +214,7 @@ app.whenReady().then(async () => {
   trayImg.setTemplateImage(true);
   try {
     tray = new Tray(trayImg);
-    tray.setToolTip('TokenGo · Offline achievements');
-    tray.setContextMenu(
-      Menu.buildFromTemplate([
-        { label: 'Open TokenGo', click: () => main.show() },
-        {
-          label: 'Quit',
-          click: () => {
-            quitting = true;
-            app.quit();
-          },
-        },
-      ]),
-    );
+    await localizeTray();
     tray.on('click', () => main.show());
   } catch {}
   powerMonitor.on('suspend', () => {
@@ -230,9 +236,13 @@ ipcMain.handle('tokengo:action', async (event, action, payload) => {
   if (event.sender !== main?.webContents) throw new Error('Untrusted sender');
   if (action === 'snapshot') return snapshot();
   if (action === 'language') {
-    if (!['en', 'zh'].includes(payload)) throw new Error('Invalid language');
+    const { isSupportedLanguage } = await import(
+      pathToFileURL(path.join(ROOT, 'src/ui/languages/registry.js')).href
+    );
+    if (!isSupportedLanguage(payload)) throw new Error('Invalid language');
     runtime.engine.state.settings.language = payload;
     runtime.store.save(runtime.engine.state);
+    await localizeTray();
     return snapshot();
   }
   if (action === 'analytics-rebuild') {
@@ -319,8 +329,15 @@ ipcMain.handle('tokengo:action', async (event, action, payload) => {
     return snapshot();
   }
   if (action === 'demo-toast') {
-    const a = demoSnapshot().achievements.find((a) => a.id === 'secrets.still-working');
-    enqueue([a], true);
+    const earned = demo
+      ? []
+      : runtime.engine
+          .snapshot()
+          .achievements.filter((a) => !a.locked)
+          .sort((a, b) => b.award.at.localeCompare(a.award.at));
+    const a =
+      earned[0] || demoSnapshot().achievements.find((a) => a.id === 'secrets.still-working');
+    enqueue([a], !earned.length, true);
     return true;
   }
   if (action === 'save-image') {
