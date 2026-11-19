@@ -8,7 +8,7 @@ let html = await readFile(new URL('index.html', output), 'utf8');
 html = html
   .replace('../../assets/icon.svg', 'assets/icon.svg')
   .replace(
-    '<title>TokenGo — Your work. Unexpected achievements.</title>',
+    /<title>[^<]*<\/title>/,
     '<meta name="description" content="TokenGo: 1,224 offline-first achievements for Codex. Hidden discoveries, Steam-style unlock cards, and shareable cabinets. Free and open source."><title>TokenGo — Your agent grinds. You collect.</title>',
   );
 await writeFile(new URL('index.html', output), html);
