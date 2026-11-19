@@ -64,14 +64,18 @@ async function executable(cache) {
       prefix,
       '--no-audit',
       '--no-fund',
+      '--ignore-scripts',
       '--package-lock=false',
       `electron@${electronVersion}`,
     ],
-    { stdio: 'inherit' },
+    { stdio: 'inherit', timeout: 300000 },
   );
   // Also works when npm is configured to ignore lifecycle scripts.
   if (!existsSync(join(module, 'path.txt')))
-    await run(process.execPath, [join(module, 'install.js')], { stdio: 'inherit' });
+    await run(process.execPath, [join(root, 'src/launcher/install-runtime.mjs'), module], {
+      stdio: 'inherit',
+      timeout: 360000,
+    });
   return resolveBinary();
 }
 

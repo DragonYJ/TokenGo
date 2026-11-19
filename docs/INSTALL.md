@@ -12,7 +12,7 @@ The package is a CLI-launched desktop companion. It does not register as a Codex
 ## What installation does
 
 1. npm installs TokenGo's public source from GitHub. There are no TokenGo install hooks, no production dependencies, and no collection during installation.
-2. The first `start` or `open` downloads Electron, pinned to the version in `package.json`, using npm and Electron's installer. Its runtime is stored in `~/.cache/tokengo/electron-VERSION`. A development checkout reuses its matching Electron dependency.
+2. The first `start` or `open` downloads Electron, pinned to the version in `package.json`, using npm and Electron's official release archives. Downloads are verified against Electron's published SHA-256 checksums; cached archives are reused. The launcher uses curl when available, with a bounded download timeout, and native extraction on macOS. Its runtime is stored in `~/.cache/tokengo/electron-VERSION`. A development checkout reuses its matching Electron dependency.
 3. TokenGo starts as a separate process. `--collect` explicitly enables local collection; `open` preserves the existing preference. Closing the cabinet leaves the tray process running. Quit stops it. Automatic login startup is currently supported by the standalone packaged app. With the GitHub CLI installation, run `tokengo open` after restarting your computer.
 
 Downloads contact GitHub and the npm registry, which can see ordinary request metadata such as your IP address. No Codex records are uploaded. Once installed, collection, notifications, statistics and card generation work offline. No account or paid backend is required.
