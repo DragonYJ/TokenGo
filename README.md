@@ -23,7 +23,7 @@ TokenGo 把日常使用 Codex 的足迹变成可收藏的成就。没有账号�
 
 ### 安装与运行
 
-下载 [Releases](https://github.com/DragonYJ/TokenGo/releases) 中适合系统的安装包，或从源码运行（Node.js 22+）：
+下载 [Releases](https://github.com/DragonYJ/TokenGo/releases) 中适合系统的安装包，或从源码运行（Node.js 22.12+）：
 
 ```sh
 git clone https://github.com/DragonYJ/TokenGo.git
@@ -40,6 +40,8 @@ npm start
 npm run demo       # 演示数据，与真实成绩隔离
 npm test           # 核心行为、去重、隐私、完整性测试
 npm run validate   # 校验所有成就包
+npm run test:ui    # 浏览器交互、分享卡和响应式测试
+npm run test:desktop # 合成日志驱动的原生桌面端到端测试
 npm run build      # 为当前系统构建桌面安装包
 npm run site       # 生成 dist/site 静态演示
 ```
@@ -52,6 +54,8 @@ node src/cli.mjs watch   # 持续本地采集，每 5 秒增量检查
 ```
 
 `CODEX_HOME` 可指定 Codex 数据根目录；默认 `~/.codex`。`TOKENGO_HOME` 可指定成绩目录。桌面默认使用系统应用数据目录，CLI 默认使用 `~/.tokengo`。不要让两个进程同时写同一个成绩目录。
+
+浏览器测试使用已安装的 macOS Chrome，或 Playwright Chromium（`npx playwright install chromium`）；也可通过 `CHROME_PATH` 指定测试浏览器。桌面测试只使用临时合成日志，不读取真实 Codex 数据。发布附件同时提供 SHA-256 校验清单。
 
 ### 隐私与防作弊边界
 

@@ -16,12 +16,14 @@
     "build": "electron-builder --publish never",
     "build:dir": "electron-builder --dir",
     "site": "node scripts/build-site.mjs",
-    "test:ui": "npm run site && node scripts/ui-smoke.mjs"
+    "test:ui": "npm run site && node scripts/ui-smoke.mjs",
+    "test:desktop": "node scripts/desktop-smoke.mjs"
   },
   "devDependencies": {
+    "@playwright/test": "^1.56.1",
     "electron": "45.3.4",
     "electron-builder": "^26.0.12",
-    "@playwright/test": "^1.56.1"
+    "prettier": "^3.10.1"
   },
   "build": {
     "appId": "io.tokengo.desktop",
@@ -42,7 +44,8 @@
         "dmg",
         "zip"
       ],
-      "identity": null
+      "identity": null,
+      "icon": "assets/icon.icns"
     },
     "win": {
       "target": [
@@ -60,5 +63,8 @@
     "type": "git",
     "url": "https://github.com/DragonYJ/TokenGo.git"
   },
-  "homepage": "https://dragonyj.github.io/TokenGo/"
+  "homepage": "https://dragonyj.github.io/TokenGo/",
+  "engines": {
+    "node": ">=22.12.0"
+  }
 }
