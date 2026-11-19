@@ -3,14 +3,14 @@
   "name": "tokengo",
   "version": "0.4.0",
   "description": "Your local Codex achievements, showcase and usage statistics in the sidebar.",
-  "author": { "name": "dragony" },
+  "author": { "name": "DragonYJ" },
   "license": "MIT",
   "extensions": {
     "com.openai": {
       "interface": {
         "displayName": "TokenGo",
         "shortDescription": "Local achievements for Codex",
-        "developerName": "dragony",
+        "developerName": "DragonYJ",
         "category": "Productivity",
         "logo": "./icon.svg"
       }

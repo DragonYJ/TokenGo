@@ -5,7 +5,7 @@
   "type": "module",
   "main": "src/desktop/main.cjs",
   "license": "MIT",
-  "author": "dragony",
+  "author": "DragonYJ",
   "scripts": {
     "start": "electron .",
     "demo": "electron . --demo",

@@ -21,6 +21,16 @@ Downloads contact GitHub and the npm registry, which can see ordinary request me
 
 Open TokenGo from the Plugins Directory or the sidebar menu, then pin its entry. Pinning and ordering are controlled by Codex. Restart the client if its entry list is stale. The installed plugin ID is `tokengo@tokengo`.
 
+### If TokenGo is missing from the plugin list
+
+CLI installation and activation do not establish that the desktop client has loaded the entry. The MCP protocol and embedded UI have passed integration tests; visibility in the actual desktop sidebar remains unverified.
+
+Fully quit the desktop client, reopen it, and look for **TokenGo** in the Plugins Directory's marketplace/source selector. It is a local marketplace, not a listing in the universal public directory.
+
+The desktop client documents discovery through a repository's `.agents/plugins/marketplace.json` or the personal catalog at `~/.agents/plugins/marketplace.json`. If a CLI-registered source is absent, add TokenGo to the personal catalog, preserving any existing entries. Its local source path must begin with `./`, resolve relative to your home directory, and point to a stable folder containing the plugin's `plugin.json`, `mcp.json`, `server.mjs` and `cabinet.html`. Use the catalog's existing name if it already exists; plugin IDs use `plugin-name@marketplace-name`. Do not overwrite another personal catalog with TokenGo's repository catalog.
+
+The current `connect` command registers a CLI marketplace; it does not create or merge this personal catalog. Restart again after changing a catalog. See the [official local marketplace instructions](https://developers.openai.com/plugins/build/plugins#build-your-own-curated-plugin-list). If the entry is still missing, report the client version, operating system and an image of the Plugins Directory; do not include your logs or conversations.
+
 The plugin and notification helper must both be version 0.4.0 or newer. The helper is the only record writer. The plugin accesses it using a local authenticated socket; it never reads the Codex log directory directly. All UI assets and dependencies are bundled.
 
 A successful first UI connection enables native notification deep links into Codex. Until then, notification clicks use the companion cabinet. To remove the sidebar plugin, run `tokengo disconnect` while the collector is running. This resets notification routing to the local cabinet, removes the plugin through the Codex CLI, and preserves records. Then run `tokengo disable` if you also want to stop collection.
