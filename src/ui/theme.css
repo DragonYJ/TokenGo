@@ -1109,3 +1109,7 @@ button {
     font-size: 12px;
   }
 }
+
+.mode[hidden] {
+  display: none;
+}

@@ -106,7 +106,6 @@ export default {
   'achievements · local record': '実績・ローカル記録',
   Demo: 'デモ',
   'Demo record': 'デモ記録',
-  'Demo gallery': 'デモギャラリー',
   'Demo adventurer · sample data': 'デモ冒険者・架空データ',
   'Demo unlock': 'デモの解除',
   'Demo data · not a real achievement': 'デモデータ・実際の実績ではありません',

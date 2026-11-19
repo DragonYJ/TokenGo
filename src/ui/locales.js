@@ -61,7 +61,6 @@ export const zhCN = {
   'Could not finish: ': '操作未完成：',
   'Demo adventurer · sample data': '演示探险家 · 示例记录',
   'achievements · local record': '枚成就 · 本地记录',
-  'Demo gallery': '演示展馆',
   'Collecting locally': '本地采集中',
   'Collection paused': '采集已暂停',
   'You are exploring a demo. Progress is fictional and share cards are marked Demo. Your real records stay on your device.':

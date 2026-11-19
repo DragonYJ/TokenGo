@@ -105,7 +105,6 @@ export default {
   'achievements · local record': '개 업적 · 로컬 기록',
   Demo: '데모',
   'Demo record': '데모 기록',
-  'Demo gallery': '데모 갤러리',
   'Demo adventurer · sample data': '데모 모험가 · 예시 데이터',
   'Demo unlock': '데모 달성',
   'Demo data · not a real achievement': '데모 데이터 · 실제 업적 아님',

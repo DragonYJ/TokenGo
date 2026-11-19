@@ -107,7 +107,6 @@ export default {
   'achievements · local record': 'succès · données locales',
   Demo: 'Démo',
   'Demo record': 'Donnée de démonstration',
-  'Demo gallery': 'Galerie de démonstration',
   'Demo adventurer · sample data': 'Aventurier de démonstration · données fictives',
   'Demo unlock': 'Succès de démonstration',
   'Demo data · not a real achievement': 'Données fictives · pas un vrai succès',

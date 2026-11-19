@@ -122,8 +122,10 @@ function updateChrome() {
   $('#profile-mode').textContent = state.demo
     ? 'Demo adventurer · sample data'
     : `${earned().length} achievements · local record`;
-  $('#mode-indicator').innerHTML =
-    `<i class="status-dot"></i> ${state.demo ? 'Demo gallery' : state.settings.watching ? 'Collecting locally' : 'Collection paused'}`;
+  $('#mode-indicator').hidden = state.demo;
+  $('#mode-indicator').innerHTML = state.demo
+    ? ''
+    : `<i class="status-dot"></i> ${state.settings.watching ? 'Collecting locally' : 'Collection paused'}`;
   document
     .querySelectorAll('[data-view]')
     .forEach((b) => b.classList.toggle('active', b.dataset.view === view));
