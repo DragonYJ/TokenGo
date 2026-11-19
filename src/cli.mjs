@@ -3,7 +3,15 @@ import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { runtime } from './core/runtime.mjs';
 const command = process.argv[2];
-if (command === 'start' || command === 'open') {
+if (['enable', 'disable', 'status'].includes(command)) {
+  try {
+    const { configure } = await import('./launcher/follow.mjs');
+    await configure(command);
+  } catch (error) {
+    console.error(`TokenGo: ${error.message}`);
+    process.exitCode = 1;
+  }
+} else if (command === 'start' || command === 'open') {
   try {
     const { launch } = await import('./launcher/launch.mjs');
     await launch(process.argv.slice(3));
@@ -17,6 +25,9 @@ if (command === 'start' || command === 'open') {
       `TokenGo — local achievements for Codex
 
   tokengo start --collect   Open the cabinet and enable local collection
+  tokengo enable           Follow Codex automatically (macOS)
+  tokengo disable          Stop following Codex
+  tokengo status           Inspect the follow service
   tokengo open              Open without changing collection preferences
   tokengo start --foreground  Keep the desktop process attached to this terminal
   tokengo scan              Scan history once (headless)

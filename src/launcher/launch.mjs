@@ -33,7 +33,7 @@ function run(command, args, options) {
   });
 }
 
-async function executable(cache) {
+export async function executable(cache) {
   // Development checkouts can use their already installed, pinned runtime.
   try {
     const binary = require('electron');

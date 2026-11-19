@@ -32,14 +32,37 @@ let main,
   suspended = false;
 let toastQueue = [];
 let collectionRequested = process.argv.includes('--collect');
-if (!app.requestSingleInstanceLock()) app.quit();
+const background = process.argv.includes('--background');
+let followTimer;
+async function followCodex() {
+  if (followTimer || process.platform !== 'darwin') return;
+  const { hasCodex } = await import(pathToFileURL(path.join(ROOT, 'src/launcher/follow.mjs')).href);
+  if (followTimer) return;
+  followTimer = setInterval(() => {
+    require('node:child_process').execFile(
+      '/bin/ps',
+      ['-U', String(process.getuid()), '-o', 'comm='],
+      (error, output) => {
+        if (!error && !hasCodex(output)) app.quit();
+      },
+    );
+  }, 5000);
+}
+if (background && process.platform === 'darwin') app.dock?.hide();
+if (!app.requestSingleInstanceLock()) {
+  app.quit();
+  process.exit(0);
+}
 app.on('second-instance', (_event, argv) => {
+  if (argv.includes('--follow-codex')) followCodex().catch(console.error);
   if (argv.includes('--collect')) {
     collectionRequested = true;
     if (runtime && toast) enableCollection().catch((e) => update({ error: e.message }));
   }
-  main?.show();
-  main?.focus();
+  if (!argv.includes('--background')) {
+    main?.show();
+    main?.focus();
+  }
 });
 async function enableCollection() {
   if (demo) return;
@@ -165,6 +188,7 @@ function png(payload) {
   return image;
 }
 app.whenReady().then(async () => {
+  if (process.argv.includes('--follow-codex')) await followCodex();
   app.setName('TokenGo');
   // Network-deny applies to every renderer. External sharing is explicit IPC only.
   session.defaultSession.webRequest.onBeforeRequest((details, callback) =>
@@ -198,7 +222,7 @@ app.whenReady().then(async () => {
     show: false,
   });
   await main.loadFile(path.join(ROOT, 'src/ui/index.html'));
-  main.show();
+  if (!background) main.show();
   main.on('close', (event) => {
     if (!quitting && tray) {
       event.preventDefault();
@@ -444,8 +468,11 @@ ipcMain.on('tokengo:toast-action', (event, action) => {
 app.on('before-quit', () => {
   quitting = true;
   clearInterval(timer);
+  clearInterval(followTimer);
   clearTimeout(toastTimer);
 });
+// A follow service owns this process and stops it when Codex exits.
+process.on('SIGTERM', () => app.quit());
 app.on('activate', () => main?.show());
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();

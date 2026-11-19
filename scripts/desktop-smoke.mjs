@@ -37,7 +37,7 @@ await writeFile(
 let app;
 try {
   app = await _electron.launch({
-    args: ['.'],
+    args: ['.', `--user-data-dir=${join(temp, 'profile')}`],
     env: { ...process.env, TOKENGO_HOME: store, CODEX_HOME: home },
     timeout: 30000,
   });

@@ -4,10 +4,10 @@ Requires Node.js 22.12 or newer, npm, Git, and a graphical desktop session. macO
 
 ```sh
 npm install --global github:DragonYJ/TokenGo
-tokengo start --collect
+tokengo enable
 ```
 
-The package is a CLI-launched desktop companion. It does not register as a Codex marketplace plugin, modify Codex configuration, or inject UI into Codex. Codex can install it by following these commands. A local process provides native cards even when no agent turn is running.
+On macOS, `enable` installs a local companion that follows Codex automatically. On Windows and Linux, automatic following is not implemented yet; use `tokengo start --collect` for manual collection. The package is a CLI-installed companion. It does not register as a Codex marketplace plugin, modify Codex configuration, or inject UI into Codex. Codex can install it by following these commands. A local process provides native cards while Codex is running, even between agent turns.
 
 ## What installation does
 
@@ -17,9 +17,22 @@ The package is a CLI-launched desktop companion. It does not register as a Codex
 
 Downloads contact GitHub and the npm registry, which can see ordinary request metadata such as your IP address. No Codex records are uploaded. Once installed, collection, notifications, statistics and card generation work offline. No account or paid backend is required.
 
+## Following Codex on macOS
+
+`tokengo enable` explicitly enables local collection and installs `~/Library/LaunchAgents/io.tokengo.codex-companion.plist`. The login service runs a small Node observer that checks executable names for the current user every five seconds. It does not inspect command arguments, conversations, or other applications' data. Supported hosts include the Codex desktop executable, the Codex host inside ChatGPT, and the native `codex` CLI. Helper/rendering processes alone do not activate it.
+
+When Codex appears, the observer starts the collector and notification renderer without a main window or Dock icon. When Codex exits, the companion exits. Closing a Codex window may leave Codex running; quit the client to end the process. The observer itself remains available for the next launch. Choosing Quit in TokenGo pauses it until Codex exits and reopens.
+
+The service uses the absolute Node and package paths captured during setup. After moving the package, updating Node paths, or clearing an npx cache, run setup again. It works offline after setup and does not require hook trust or change Codex security settings.
+
+Use `tokengo status` to inspect the service and `tokengo disable` to unload and remove it. Disable before uninstalling or moving the package. Logs are in the runtime directory under `companion.log`; review local paths before sharing.
+
 ## Commands
 
 ```sh
+tokengo enable                  # macOS: follow Codex silently
+tokengo disable                 # Remove automatic following
+tokengo status                  # Inspect the service
 tokengo open                    # Open; preserve collection preference
 tokengo start --collect         # Open and enable collection
 tokengo start --foreground      # Show startup errors in the terminal
@@ -33,7 +46,7 @@ The launcher writes diagnostics to `~/.cache/tokengo/desktop.log` (or your custo
 
 ## Updating and removal
 
-Quit TokenGo before updating or uninstalling. Repeat the GitHub install command to update. To select a reviewed revision, append `#COMMIT_SHA` to `github:DragonYJ/TokenGo`.
+Run `tokengo disable` and quit TokenGo before updating or uninstalling. Re-run `tokengo enable` after updating. Repeat the GitHub install command to update. To select a reviewed revision, append `#COMMIT_SHA` to `github:DragonYJ/TokenGo`.
 
 ```sh
 npm uninstall --global tokengo

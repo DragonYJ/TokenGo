@@ -36,24 +36,26 @@ The achievement cabinet takes its cues from Steam and World of Warcraft: a colle
 
 Tell Codex:
 
-> Install TokenGo from https://github.com/DragonYJ/TokenGo using its README, then start local achievement collection. Keep my data on this computer.
+> Install TokenGo from https://github.com/DragonYJ/TokenGo using its README, then enable automatic collection whenever Codex is open on macOS. Keep my data on this computer.
 
 Or run these commands (Node.js 22.12+ and Git required):
 
 ```sh
 npm install --global github:DragonYJ/TokenGo
-tokengo start --collect
+tokengo enable
 ```
 
-No installer wizard or app dragging. The first launch prepares a pinned Electron runtime for native cards and opens your cabinet. `--collect` explicitly enables collection of your local Codex history and new activity. Closing the window keeps TokenGo in the tray; **Quit** stops it. It does not enable login startup automatically.
+**On macOS, TokenGo follows Codex.** `enable` prepares the notification runtime and installs a user-level login service. While Codex is open, collection starts silently: no cabinet window and no Dock icon. Quit Codex and collection stops, normally within five seconds. Click an unlock card or use the tray to open your cabinet. A small local observer remains idle between Codex sessions; it never uploads data. No installer wizard or app dragging.
 
-For a one-command first run without a global command:
+Automatic following currently supports macOS. On Windows and Linux, use `tokengo start --collect` for manual startup.
+
+For a one-command macOS setup without a global command:
 
 ```sh
-npx --yes --package=github:DragonYJ/TokenGo tokengo start --collect
+npx --yes --package=github:DragonYJ/TokenGo tokengo enable
 ```
 
-This uses npm's cache; use the global install for a lasting command. To open the cabinet later, run `tokengo open`. To update, quit TokenGo and repeat the install command. To remove the command, quit and run `npm uninstall --global tokengo`. Your records are preserved. See [installation and troubleshooting](docs/INSTALL.md).
+This uses npm's cache; use the global install for a lasting integration. Clearing that cache requires running setup again. To open the cabinet, run `tokengo open`. To stop automatic following, run `tokengo disable`. Before updating or uninstalling, disable following and quit TokenGo. After updating, run `tokengo enable` again. Remove the command with `npm uninstall --global tokengo`; your records are preserved. See [installation and troubleshooting](docs/INSTALL.md).
 
 Prefer a standalone app without Node.js? [Desktop downloads](https://github.com/DragonYJ/TokenGo/releases/latest) remain available for macOS, Windows and Linux.
 
