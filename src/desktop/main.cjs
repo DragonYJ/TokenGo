@@ -31,11 +31,23 @@ let main,
   quitting = false,
   suspended = false;
 let toastQueue = [];
+let collectionRequested = process.argv.includes('--collect');
 if (!app.requestSingleInstanceLock()) app.quit();
-app.on('second-instance', () => {
+app.on('second-instance', (_event, argv) => {
+  if (argv.includes('--collect')) {
+    collectionRequested = true;
+    if (runtime && toast) enableCollection().catch((e) => update({ error: e.message }));
+  }
   main?.show();
   main?.focus();
 });
+async function enableCollection() {
+  if (demo) return;
+  if (!runtime.engine.state.lastScan) await scan('history');
+  runtime.engine.state.settings.watching = true;
+  runtime.store.save(runtime.engine.state);
+  update();
+}
 function secureWindow(options) {
   const win = new BrowserWindow({
     ...options,
@@ -208,6 +220,8 @@ app.whenReady().then(async () => {
   toast.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
   await toast.loadFile(path.join(ROOT, 'src/ui/toast.html'));
   nextToast();
+  if (collectionRequested && !demo)
+    await enableCollection().catch((e) => update({ error: e.message }));
   const trayImg = nativeImage
     .createFromPath(path.join(ROOT, 'assets/tray.png'))
     .resize({ width: 18, height: 18 });

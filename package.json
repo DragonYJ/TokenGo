@@ -17,7 +17,8 @@
     "build:dir": "electron-builder --dir",
     "site": "node scripts/build-site.mjs",
     "test:ui": "npm run site && node scripts/ui-smoke.mjs",
-    "test:desktop": "node scripts/desktop-smoke.mjs"
+    "test:desktop": "node scripts/desktop-smoke.mjs",
+    "test:install": "node scripts/install-smoke.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.1",
@@ -67,5 +68,16 @@
   "homepage": "https://dragonyj.github.io/TokenGo/",
   "engines": {
     "node": ">=22.12.0"
-  }
+  },
+  "bin": {
+    "tokengo": "src/cli.mjs"
+  },
+  "files": [
+    "src/",
+    "packs/",
+    "assets/",
+    "community/rates.json",
+    "LICENSE",
+    "README.md"
+  ]
 }

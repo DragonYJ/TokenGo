@@ -6,7 +6,7 @@
 
 **Collect milestones from your local Codex history, pin your favorites, and share a card.**
 
-[Try the demo](https://dragonyj.github.io/TokenGo/) · [Download TokenGo](https://github.com/DragonYJ/TokenGo/releases/latest) · [Invent an achievement](CONTRIBUTING.md)
+[Browse the cabinet](https://dragonyj.github.io/TokenGo/) · [Install from GitHub](#start-your-collection) · [Invent an achievement](CONTRIBUTING.md)
 
 Offline collection. Hidden discoveries. No account. Free & open source.
 
@@ -34,11 +34,30 @@ The achievement cabinet takes its cues from Steam and World of Warcraft: a colle
 
 ## Start your collection
 
-1. **[Download the latest release](https://github.com/DragonYJ/TokenGo/releases/latest)** for macOS, Windows or Linux.
-2. Open TokenGo and choose **Start collecting**, or scan your history in Settings. Nothing is scanned until you ask.
-3. Work with Codex. Discover a badge. Pin it. Share the moment when you feel like it.
+Tell Codex:
 
-The website is a fictional demo, clearly labeled on screen and in exported cards. Install the desktop app to collect your own achievements. TokenGo is an independent companion, not an official OpenAI extension or a reader of ChatGPT web conversations.
+> Install TokenGo from https://github.com/DragonYJ/TokenGo using its README, then start local achievement collection. Keep my data on this computer.
+
+Or run these commands (Node.js 22.12+ and Git required):
+
+```sh
+npm install --global github:DragonYJ/TokenGo
+tokengo start --collect
+```
+
+No installer wizard or app dragging. The first launch prepares a pinned Electron runtime for native cards and opens your cabinet. `--collect` explicitly enables collection of your local Codex history and new activity. Closing the window keeps TokenGo in the tray; **Quit** stops it. It does not enable login startup automatically.
+
+For a one-command first run without a global command:
+
+```sh
+npx --yes --package=github:DragonYJ/TokenGo tokengo start --collect
+```
+
+This uses npm's cache; use the global install for a lasting command. To open the cabinet later, run `tokengo open`. To update, quit TokenGo and repeat the install command. To remove the command, quit and run `npm uninstall --global tokengo`. Your records are preserved. See [installation and troubleshooting](docs/INSTALL.md).
+
+Prefer a standalone app without Node.js? [Desktop downloads](https://github.com/DragonYJ/TokenGo/releases/latest) remain available for macOS, Windows and Linux.
+
+The website uses fictional data, labeled in the collection and exported cards. Start the local companion to collect your own achievements. TokenGo is an independent companion, not an official OpenAI extension or a reader of ChatGPT web conversations.
 
 Community builds are currently unsigned. Your OS may require explicit approval to open them; inspect the source or build locally if preferred. Release assets include SHA-256 manifests. There is no automatic updater.
 
