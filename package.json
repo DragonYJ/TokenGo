@@ -1,0 +1,64 @@
+{
+  "name": "tokengo",
+  "version": "0.1.0",
+  "description": "Your work. Unexpected achievements. An offline-first achievement companion for Codex.",
+  "type": "module",
+  "main": "src/desktop/main.cjs",
+  "license": "MIT",
+  "author": "TokenGo contributors",
+  "scripts": {
+    "start": "electron .",
+    "demo": "electron . --demo",
+    "test": "node --test tests/*.test.mjs",
+    "validate": "node scripts/validate.mjs",
+    "scan": "node src/cli.mjs scan",
+    "watch": "node src/cli.mjs watch",
+    "build": "electron-builder --publish never",
+    "build:dir": "electron-builder --dir",
+    "site": "node scripts/build-site.mjs",
+    "test:ui": "npm run site && node scripts/ui-smoke.mjs"
+  },
+  "devDependencies": {
+    "electron": "45.3.4",
+    "electron-builder": "^26.0.12",
+    "@playwright/test": "^1.56.1"
+  },
+  "build": {
+    "appId": "io.tokengo.desktop",
+    "productName": "TokenGo",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "packs/**/*",
+      "assets/**/*",
+      "package.json",
+      "LICENSE"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "identity": null
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ]
+    },
+    "icon": "assets/icon.png"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DragonYJ/TokenGo.git"
+  },
+  "homepage": "https://dragonyj.github.io/TokenGo/"
+}
