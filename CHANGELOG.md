@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.1
+
+- Refined the interface using the Unslop design process: graphite surfaces, quiet borders and color reserved for medals and meaningful data highlights.
+- Replaced decorative Unicode symbols with one local line-icon set and aligned navigation, panel spacing and type.
+- Replaced generic slogans with contextual labels in all eight languages; retained achievement names and humor.
+- Simplified canvas share cards and added the three-step medal track.
+- Preserved the cabinet, pinning, category navigation, statistics, community disclosure and all collection rules.
+
 ## 0.3.0
 
 - Eight offline interface languages: English, Simplified Chinese, Japanese, Korean, Spanish, French, German and Portuguese. Includes built-in achievement names, statistics, settings, consent copy, notifications, tray menus and share text.

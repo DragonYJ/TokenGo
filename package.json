@@ -1,7 +1,7 @@
 {
   "name": "tokengo",
-  "version": "0.3.0",
-  "description": "Your work. Unexpected achievements. An offline-first achievement companion for Codex.",
+  "version": "0.3.1",
+  "description": "Local achievements for Codex. An offline cabinet, activity statistics and shareable cards.",
   "type": "module",
   "main": "src/desktop/main.cjs",
   "license": "MIT",

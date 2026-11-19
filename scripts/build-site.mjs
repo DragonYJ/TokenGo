@@ -9,7 +9,7 @@ html = html
   .replace('../../assets/icon.svg', 'assets/icon.svg')
   .replace(
     /<title>[^<]*<\/title>/,
-    '<meta name="description" content="TokenGo: 1,224 offline-first achievements for Codex. Hidden discoveries, Steam-style unlock cards, and shareable cabinets. Free and open source."><title>TokenGo — Your agent grinds. You collect.</title>',
+    '<meta name="description" content="TokenGo: 1,224 offline-first achievements for Codex. Hidden discoveries, Steam-style unlock cards, and shareable cabinets. Free and open source."><title>TokenGo — Local achievements for Codex</title>',
   );
 await writeFile(new URL('index.html', output), html);
 await writeFile(

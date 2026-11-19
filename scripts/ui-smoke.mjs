@@ -111,7 +111,7 @@ try {
     assert.equal(await page.locator('html').getAttribute('lang'), locale);
     await page.locator('[data-view="statistics"]').first().click();
     const heading = await page.locator('h1').textContent();
-    if (code !== 'en') assert.notEqual(heading, 'Your adventure, in numbers.');
+    if (code !== 'en') assert.notEqual(heading, 'Codex activity');
     const option = await page.locator('#stats-sort option').first().textContent();
     if (code !== 'en') assert.notEqual(option, 'Most tokens');
     await page.setViewportSize({ width: 390, height: 844 });

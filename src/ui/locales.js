@@ -525,3 +525,29 @@ Object.assign(zhCN, {
   'Offline achievements': '离线成就',
   'Restart TokenGo and try again.': '请重启 TokenGo 后重试。',
 });
+
+Object.assign(zhCN, {
+  'Codex achievements': 'Codex 成就',
+  'Collected locally from your Codex activity': '从本地 Codex 活动中收集',
+  'Pinned achievements': '置顶成就',
+  'Choose up to six earned badges': '选择至多六枚已获徽章',
+  'Empty slot': '空展位',
+  'Choose an earned badge to pin here': '选择已获徽章并置顶到这里',
+  'Next medals': '下一枚奖章',
+  Categories: '分类',
+  'Recently earned': '最近获得',
+  'Codex activity': 'Codex 活动',
+  'Daily totals': '每日总量',
+  'Token breakdown': 'Token 构成',
+  'Tool usage': '工具使用',
+  'Activity by hour': '每小时活动',
+  'My Codex achievements': '我的 Codex 成就',
+  'Collect your own Codex achievements': '收集你自己的 Codex 成就',
+  'Local achievements for Codex': 'Codex 本地成就',
+  'Share achievement': '分享成就',
+  Search: '搜索',
+  Pinned: '已置顶',
+  Collection: '成就收藏',
+});
+
+Object.assign(zhCN, { Achievements: '成就', days: '天' });

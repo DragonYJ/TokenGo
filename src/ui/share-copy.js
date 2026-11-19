@@ -8,8 +8,8 @@ export function shareTitle(awards, demo = false) {
 export function shareCopy(awards, demo, repo) {
   return [
     shareTitle(awards, demo),
-    awards.length === 1 ? t(achievementFact(awards[0])) : t('This is my adventure.'),
-    t('What is your Codex hiding?'),
+    awards.length === 1 ? t(achievementFact(awards[0])) : t('My Codex achievements'),
+    t('Collect your own Codex achievements'),
     repo,
   ].join('\n');
 }

@@ -77,7 +77,7 @@ export function summarize(snapshot, range = '30', selectedDay = null) {
   };
 }
 function kpi(label, value, note, icon) {
-  return `<article class="metric-card"><span class="metric-symbol">${icon}</span><span>${label}</span><strong>${value}</strong><small>${note}</small></article>`;
+  return `<article class="metric-card"><span>${label}</span><strong>${value}</strong><small>${note}</small></article>`;
 }
 function dailyChart(data, metric, selectedDay) {
   const max = Math.max(1, ...data.series.map((d) => d.totals[metric] || 0));
@@ -121,7 +121,7 @@ export function renderStatistics(snapshot, options = {}) {
       .slice(0, 8),
     toolMax = Math.max(1, ...tools.map((x) => x[1]));
   const hoursMax = Math.max(1, ...d.hours);
-  return `<section class="page-heading statistics-heading"><div><span class="section-kicker">The story behind the badges</span><h1>Your adventure, in numbers.</h1><p>Local Codex activity. No account, no live pricing calls, no upload.</p></div><button class="button secondary" data-action="analytics-rebuild" ${snapshot.demo ? 'disabled' : ''}>↻ Rebuild from local logs</button></section>
+  return `<section class="page-heading statistics-heading"><div><h1>Codex activity</h1><p>Local Codex activity. No account, no live pricing calls, no upload.</p></div><button class="button secondary" data-action="analytics-rebuild" ${snapshot.demo ? 'disabled' : ''}>Rebuild from local logs</button></section>
  <div class="statistics-toolbar"><div class="period-tabs" role="group" aria-label="Statistics period">${[
    ['7', '7 days'],
    ['30', '30 days'],
@@ -137,7 +137,7 @@ export function renderStatistics(snapshot, options = {}) {
    )}</div><span class="muted">${selectedDay ? `<button class="text-button" data-action="stats-reset-day">${selectedDay} × Clear day filter</button>` : `${d.start} — ${d.end}`}</span></div>
  ${snapshot.analytics?.legacy ? '<div class="banner">Earlier records do not have daily aggregates yet. Rebuild statistics from local logs; earned badges are preserved.</div>' : ''}
  <div class="metric-grid">${kpi('Total tokens', short(total['tokens.total']), 'Input + output; cache is not added twice', '✦')}${kpi('Tasks ended', short(total['tasks.completed']), 'Completion markers, not quality scores', '⚑')}${kpi('Active sessions', d.sessions.length, 'Distinct sessions with activity', '◈')}${kpi('Observed active time', `${short((total['active.minutes'] || 0) / 60)} h`, `${d.days} active days in this period`, '◷')}</div>
- <div class="statistics-panels"><section class="analytics-panel trend-panel"><div class="section-header"><div><h2>Activity over time</h2><p class="panel-subtitle">A little work, adding up.</p></div><div class="segmented">${[
+ <div class="statistics-panels"><section class="analytics-panel trend-panel"><div class="section-header"><div><h2>Daily totals</h2></div><div class="segmented">${[
    ['tokens.total', 'Tokens'],
    ['tasks.completed', 'Tasks'],
  ]
@@ -147,9 +147,9 @@ export function renderStatistics(snapshot, options = {}) {
    )
    .join(
      '',
-   )}</div></div>${dailyChart(d, metric, selectedDay)}</section><section class="analytics-panel token-panel"><h2>Where the tokens go</h2><div class="token-ring" style="--cached:${input ? Math.min(100, (100 * cached) / input) : 0}%"><div><strong>${input ? Math.min(100, (100 * cached) / input).toFixed(1) + '%' : '—'}</strong><span>Input cached</span></div></div><div class="token-legend"><span><i class="legend-input"></i>Input <b>${short(input)}</b></span><span><i class="legend-output"></i>Output <b>${short(output)}</b></span><span><i class="legend-cache"></i>Cache read <b>${short(cached)}</b></span></div><p class="panel-footnote">Cache is part of input. Reasoning is part of output. Costs are not estimated.</p></section></div>
- <div class="statistics-panels equal"><section class="analytics-panel"><div class="section-header"><h2>Model mix</h2><span class="muted">${Object.keys(d.models).length} model groups</span></div><div class="table-scroll"><table class="data-table"><thead><tr><th>Model family</th><th>Input</th><th>Output</th><th>Cached</th><th>Total</th></tr></thead><tbody>${modelRows(d)}</tbody></table></div><p class="panel-footnote">Only public model families are named. Other identifiers stay anonymous.</p></section><section class="analytics-panel"><div class="section-header"><h2>Your tool belt</h2><span class="muted">${short(total['tools.total'])} calls</span></div>${tools.length ? `<div class="tool-bars">${tools.map(([name, n]) => `<div class="tool-row"><span>${esc(name)}</span><div><i style="width:${(100 * n) / toolMax}%"></i></div><b>${n}</b></div>`).join('')}</div>` : '<p class="table-empty">No categorized tool calls in this period.</p>'}<p class="panel-footnote">Categories can overlap. A call is not proof of a successful result.</p></section></div>
- <section class="analytics-panel rhythm-panel"><div><h2>Your daily rhythm</h2><p class="panel-subtitle">Messages and tool calls by local hour</p></div><div class="hour-bars">${d.hours.map((n, i) => `<div title="${String(i).padStart(2, '0')}:00 · ${n} events"><span style="height:${Math.max(n ? 3 : 0, (80 * n) / hoursMax)}px"></span><small>${i % 3 === 0 ? String(i).padStart(2, '0') : ''}</small></div>`).join('')}</div></section>
+   )}</div></div>${dailyChart(d, metric, selectedDay)}</section><section class="analytics-panel token-panel"><h2>Token breakdown</h2><div class="token-ring" style="--cached:${input ? Math.min(100, (100 * cached) / input) : 0}%"><div><strong>${input ? Math.min(100, (100 * cached) / input).toFixed(1) + '%' : '—'}</strong><span>Input cached</span></div></div><div class="token-legend"><span><i class="legend-input"></i>Input <b>${short(input)}</b></span><span><i class="legend-output"></i>Output <b>${short(output)}</b></span><span><i class="legend-cache"></i>Cache read <b>${short(cached)}</b></span></div><p class="panel-footnote">Cache is part of input. Reasoning is part of output. Costs are not estimated.</p></section></div>
+ <div class="statistics-panels equal"><section class="analytics-panel"><div class="section-header"><h2>Model mix</h2><span class="muted">${Object.keys(d.models).length} model groups</span></div><div class="table-scroll"><table class="data-table"><thead><tr><th>Model family</th><th>Input</th><th>Output</th><th>Cached</th><th>Total</th></tr></thead><tbody>${modelRows(d)}</tbody></table></div><p class="panel-footnote">Only public model families are named. Other identifiers stay anonymous.</p></section><section class="analytics-panel"><div class="section-header"><h2>Tool usage</h2><span class="muted">${short(total['tools.total'])} calls</span></div>${tools.length ? `<div class="tool-bars">${tools.map(([name, n]) => `<div class="tool-row"><span>${esc(name)}</span><div><i style="width:${(100 * n) / toolMax}%"></i></div><b>${n}</b></div>`).join('')}</div>` : '<p class="table-empty">No categorized tool calls in this period.</p>'}<p class="panel-footnote">Categories can overlap. A call is not proof of a successful result.</p></section></div>
+ <section class="analytics-panel rhythm-panel"><div><h2>Activity by hour</h2><p class="panel-subtitle">Messages and tool calls by local hour</p></div><div class="hour-bars">${d.hours.map((n, i) => `<div title="${String(i).padStart(2, '0')}:00 · ${n} events"><span style="height:${Math.max(n ? 3 : 0, (80 * n) / hoursMax)}px"></span><small>${i % 3 === 0 ? String(i).padStart(2, '0') : ''}</small></div>`).join('')}</div></section>
  <section class="analytics-panel session-panel"><div class="section-header"><div><h2>Session explorer</h2><p class="panel-subtitle">Anonymous local references. No conversation titles or project paths.</p></div><select id="stats-sort" aria-label="Sort sessions">${[
    ['tokens.total', 'Most tokens'],
    ['tools.total', 'Most tool calls'],

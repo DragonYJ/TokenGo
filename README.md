@@ -1,10 +1,10 @@
 <div align="center">
 
-# ✦ TokenGo
+# TokenGo
 
-### Your agent grinds. You collect.
+### Local achievements for Codex
 
-**Turn everyday Codex work into a trophy room full of unexpected moments.**
+**Collect milestones from your local Codex history, pin your favorites, and share a card.**
 
 [Try the demo](https://dragonyj.github.io/TokenGo/) · [Download TokenGo](https://github.com/DragonYJ/TokenGo/releases/latest) · [Invent an achievement](CONTRIBUTING.md)
 
@@ -14,19 +14,19 @@ Offline collection. Hidden discoveries. No account. Free & open source.
 
 ![Your TokenGo trophy room](docs/screenshots/collection.png)
 
-You came to ship a feature. Your agent disappeared into a twelve-hour quest. Somewhere along the way, a little card appeared:
+TokenGo reads local Codex logs and keeps track of tasks, token use, tool calls and active runs. When you earn an achievement, a small card appears without taking keyboard focus:
 
 ![Still Grinding. I’m AFK. — a sample unlock card](docs/screenshots/toast.png)
 
-**That is TokenGo.** A local desktop companion for Codex, with the delight of a Steam unlock and a WoW-inspired achievement cabinet. Keep doing your work. Let the surprises find you.
+The achievement cabinet takes its cues from Steam and World of Warcraft: a collection to browse, medals to work toward, and hidden achievements to discover.
 
-## A lot to discover. A little to show off.
+## What you can collect
 
 - **1,224 achievements, three medals each.** 60 metric families × 20 milestone badges, plus 24 hidden discoveries. Every badge grows through **Bronze → Silver → Gold**. This count includes milestone thresholds, not 1,224 distinct behaviors.
-- **A trophy room that feels yours.** Pin six favorite achievements, see the next medal's progress, and explore domains from the right-hand navigation. No wall of a thousand badges.
-- **Tiny interruptions, big aha moments.** Bottom-right cards never take keyboard focus. Hover to pause. Click the card to return to your cabinet. Quiet mode is built in.
+- **A personal showcase.** Pin six favorite achievements, see the next medal's progress, and explore domains from the right-hand navigation. No wall of a thousand badges.
+- **Desktop notifications.** Bottom-right cards never take keyboard focus. Hover to pause. Click the card to return to your cabinet. Quiet mode is built in.
 - **Three ways to share.** Prominent X, Reddit and Other buttons lead to your next step. Generate a PNG and caption locally; you attach the image and publish the post yourself. Every card points back to TokenGo.
-- **Statistics with a story.** Daily trends, input/output/cache breakdowns, model families, tool categories, hourly activity and a session explorer. No billing credentials or external pricing calls.
+- **Local usage statistics.** Daily trends, input/output/cache breakdowns, model families, tool categories, hourly activity and a session explorer. No billing credentials or external pricing calls.
 - **English by default, multilingual by design.** English, Simplified Chinese, Japanese, Korean, Spanish, French, German and Portuguese are included. Interface, built-in badge names, notifications and share copy use bundled offline translations.
 - **A community you can build on.** Add a JSON achievement pack, translate the interface, design a cabinet, or build your own extension. MIT licensed.
 
@@ -98,7 +98,7 @@ Current ingestion supports uncompressed `.jsonl` files in Codex's `sessions` and
 
 ## Make the next unexpected achievement
 
-The best easter egg might be yours. A funny name, an observable moment, a tiny JSON rule — that is enough to start.
+A contribution can start with a name, an observable condition and a JSON rule.
 
 - Add a milestone or a secret in `packs/`.
 - Improve a language pack using the [localization guide](docs/LOCALIZATION.md).
@@ -119,3 +119,5 @@ scripts/        Validation, demo build, release and interaction checks
 Built by **dragony** and contributors. [MIT licensed](LICENSE).
 
 The unlock interaction takes inspiration from Steam; domain organization from World of Warcraft; statistics organization from [pepperonas/token-tracker](https://github.com/pepperonas/token-tracker). Implementation and included vector artwork are original. TokenGo is not affiliated with Valve, Blizzard, OpenAI, or token-tracker.
+
+The interface refinement follows [Unslop by Damir Sokolovsky](https://github.com/heydamir/unslop), a design skill licensed under CC BY 4.0. See [design decisions](docs/DESIGN.md).

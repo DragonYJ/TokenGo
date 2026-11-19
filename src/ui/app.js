@@ -1,3 +1,4 @@
+import { icon } from './icons.js';
 import { isDemoShare, shareTitle, shareCopy } from './share-copy.js';
 import { languages } from './languages/registry.js';
 import { renderStatistics } from './statistics.js';
@@ -131,15 +132,15 @@ function updateChrome() {
     'You are exploring a demo. Progress is fictional and share cards are marked Demo. Your real records stay on your device.';
 }
 function stat(icon, value, label) {
-  return `<div class="stat"><span class="stat-icon">${glyph(icon)}</span><div><div class="stat-value">${value}</div><div class="stat-label">${label}</div></div></div>`;
+  return `<div class="stat"><div><div class="stat-value">${value}</div><div class="stat-label">${label}</div></div></div>`;
 }
 function featuredCard(a) {
-  return `<button class="featured ${a.rarity}" data-achievement="${a.id}" style="--rarity:${palette[a.rarity][0]}"><div class="featured-badge">${badge(a.icon, a.rarity, a.locked)}</div><div class="featured-info"><span class="rarity-tag">${rarityNames[a.rarity]}${a.hidden ? ' · Hidden achievement' : ''}</span><h3>${esc(a.name)}</h3><p>${esc(a.locked ? a.description : achievementFact(a))}</p><small>${a.locked ? 'Waiting on your next adventure' : `${state.demo ? 'Demo unlock' : sourceNames[a.award.source] || 'Local record'}　✧`}</small></div></button>`;
+  return `<button class="featured ${a.rarity}" data-achievement="${a.id}" style="--rarity:${palette[a.rarity][0]}"><div class="featured-badge">${badge(a.icon, a.rarity, a.locked)}</div><div class="featured-info"><span class="rarity-tag">${rarityNames[a.rarity]}${a.hidden ? ' · Hidden achievement' : ''}</span><h3>${esc(a.name)}</h3><p>${esc(a.locked ? a.description : achievementFact(a))}</p><small>${a.locked ? 'Waiting on your next adventure' : `${state.demo ? 'Demo unlock' : sourceNames[a.award.source] || 'Local record'}`}</small></div></button>`;
 }
 function card(a) {
   const progress = Math.round(a.progress * 100),
     current = a.conditions?.[0];
-  return `<button class="achievement ${a.locked ? 'locked' : 'unlocked'}" data-achievement="${a.id}" style="--rarity:${palette[a.rarity][0]}" aria-label="${esc(a.name)}，${a.locked ? 'Locked' : 'Unlocked'}"><span class="rarity-corner">${rarityNames[a.rarity]}</span>${!a.locked ? '<span class="earned-check">✓</span>' : ''}${pins().includes(a.id) ? '<span class="pin-mark">✦</span>' : ''}<div class="achievement-badge">${badge(a.icon, a.rarity, a.hidden && a.locked)}</div><h3>${esc(a.name)}</h3><p>${esc(a.locked ? a.description : achievementFact(a))}</p>${medals(a)}<div class="progress"><span style="width:${progress}%"></span></div><div class="progress-label"><span>${a.hidden && a.locked ? 'Undiscovered' : a.medalLevel < 3 && current ? `${fmt(current.current)} / ${fmt(current.gte)}` : 'Gold complete'}</span><span>${a.hidden && a.locked ? '✧' : `${progress}%`}</span></div>${communityRate(a)}</button>`;
+  return `<button class="achievement ${a.locked ? 'locked' : 'unlocked'}" data-achievement="${a.id}" style="--rarity:${palette[a.rarity][0]}" aria-label="${esc(a.name)}, ${a.locked ? 'Locked' : 'Unlocked'}"><span class="rarity-corner">${rarityNames[a.rarity]}</span>${!a.locked ? `<span class="earned-check">${icon('check')}</span>` : ''}${pins().includes(a.id) ? `<span class="pin-mark" aria-label="Pinned">${icon('pin')}</span>` : ''}<div class="achievement-badge">${badge(a.icon, a.rarity, a.hidden && a.locked)}</div><h3>${esc(a.name)}</h3><p>${esc(a.locked ? a.description : achievementFact(a))}</p>${medals(a)}<div class="progress"><span style="width:${progress}%"></span></div><div class="progress-label"><span>${a.hidden && a.locked ? 'Undiscovered' : a.medalLevel < 3 && current ? `${fmt(current.current)} / ${fmt(current.gte)}` : 'Gold complete'}</span><span>${a.hidden && a.locked ? '—' : `${progress}%`}</span></div>${communityRate(a)}</button>`;
 }
 function communityRate(a) {
   const sample = state.community || { participants: 0, counts: {} };
@@ -153,7 +154,7 @@ function medals(a) {
 }
 function showcase() {
   const awards = pins().map((id) => state.achievements.find((a) => a.id === id));
-  return `<section class="cabinet-stage"><div class="section-header"><div><span class="section-kicker">YOUR PERSONAL HALL OF FAME</span><h2>The trophy room.</h2><p>Six places. Your proudest moments.</p></div><button class="button" data-action="share-cabinet" ${awards.length ? '' : 'disabled'}>Share showcase ↗</button></div><div class="cabinet-slots">${Array.from({ length: 6 }, (_, i) => (awards[i] ? `<div class="cabinet-slot filled"><button data-achievement="${awards[i].id}" class="showcase-medal">${badge(awards[i].icon, awards[i].rarity)}<strong>${esc(awards[i].name)}</strong></button>${medals(awards[i])}<div class="progress"><span style="width:${awards[i].progress * 100}%"></span></div><small>${awards[i].nextMedal ? 'Next: ' + rarityNames[awards[i].nextMedal] + ' · ' + Math.round(awards[i].progress * 100) + '%' : 'Gold complete'}</small><button data-unpin="${awards[i].id}" class="text-button">Unpin</button></div>` : '<div class="cabinet-slot"><span class="empty-slot">＋</span><strong>Your next proud moment</strong><small>Open an earned badge to pin it here.</small></div>')).join('')}</div></section>`;
+  return `<section class="cabinet-stage"><div class="section-header"><div><h2>Pinned achievements</h2><p>Choose up to six earned badges</p></div><button class="button" data-action="share-cabinet" ${awards.length ? '' : 'disabled'}>Share showcase ↗</button></div><div class="cabinet-slots">${Array.from({ length: 6 }, (_, i) => (awards[i] ? `<div class="cabinet-slot filled"><button data-achievement="${awards[i].id}" class="showcase-medal">${badge(awards[i].icon, awards[i].rarity)}<strong>${esc(awards[i].name)}</strong></button>${medals(awards[i])}<div class="progress"><span style="width:${awards[i].progress * 100}%"></span></div><small>${awards[i].nextMedal ? 'Next: ' + rarityNames[awards[i].nextMedal] + ' · ' + Math.round(awards[i].progress * 100) + '%' : 'Gold complete'}</small><button data-unpin="${awards[i].id}" class="text-button">Unpin</button></div>` : `<div class="cabinet-slot"><span class="empty-slot">${icon('plus')}</span><strong>Empty slot</strong><small>Choose an earned badge to pin here</small></div>`)).join('')}</div></section>`;
 }
 function collection() {
   const domains = Object.entries(categoryLabels)
@@ -167,7 +168,7 @@ function collection() {
     .filter((a) => !a.hidden && a.medalLevel < 3)
     .sort((a, b) => b.progress - a.progress)
     .slice(0, 3);
-  return `<div class="page-heading"><span class="section-kicker">WORK BECOMES A STORY</span><h1>Your agent grinds. You collect.</h1><p>Small victories. Long adventures. A few secrets worth discovering.</p></div><section class="stats">${stat('trophy', earned().length + '<small> / ' + state.achievements.length + '</small>', 'Achievements collected')}${stat('spark', fmt(state.metrics['tokens.total']), 'Total tokens')}${stat('flag', fmt(state.metrics['tasks.completed']), 'Tasks ended')}${stat('flame', state.metrics.streak || 0, 'Longest streak')}</section><div class="collection-layout"><div class="collection-main">${cabinetFocus ? `<section class="focused-award"><span class="section-kicker">YOUR LATEST AHA MOMENT</span>${featuredCard(cabinetFocus)}<p>${esc(achievementFact(cabinetFocus))}</p></section>` : ''}${showcase()}${category === 'all' ? `<div class="section-header"><h2>Your next milestones</h2><button class="text-button" data-view="statistics">Explore your statistics ↗</button></div><div class="achievement-grid next-milestones">${near.map(card).join('')}</div>` : `<div class="section-header"><h2>${categoryLabels[category]}</h2><button class="text-button" data-category="all">Back to overview</button></div>${filters()}<div id="results"></div>`}</div><aside class="domain-nav"><span class="section-kicker">ACHIEVEMENT DOMAINS</span><button class="domain-button ${category === 'all' ? 'active' : ''}" data-category="all">Overview</button>${domains}<p>Each achievement grows through Bronze, Silver and Gold.</p><button class="button secondary" data-action="${state.demo ? 'install' : state.settings.watching ? 'preview' : 'watch'}">${state.demo ? 'Get TokenGo ↗' : state.settings.watching ? 'Preview an unlock' : 'Start collecting'}</button></aside></div>`;
+  return `<div class="page-heading"><h1>Codex achievements</h1><p>Collected locally from your Codex activity</p></div><section class="stats">${stat('trophy', earned().length + '<small> / ' + state.achievements.length + '</small>', 'Achievements collected')}${stat('spark', fmt(state.metrics['tokens.total']), 'Total tokens')}${stat('flag', fmt(state.metrics['tasks.completed']), 'Tasks ended')}${stat('flame', `${state.metrics.streak || 0}<small> days</small>`, 'Longest streak')}</section><div class="collection-layout"><div class="collection-main">${cabinetFocus ? `<section class="focused-award"><span class="section-kicker">Recently earned</span>${featuredCard(cabinetFocus)}<p>${esc(achievementFact(cabinetFocus))}</p></section>` : ''}${showcase()}${category === 'all' ? `<div class="section-header"><h2>Next medals</h2><button class="text-button" data-view="statistics">Explore your statistics ↗</button></div><div class="achievement-grid next-milestones">${near.map(card).join('')}</div>` : `<div class="section-header"><h2>${categoryLabels[category]}</h2><button class="text-button" data-category="all">Back to overview</button></div>${filters()}<div id="results"></div>`}</div><aside class="domain-nav"><span class="section-kicker">Categories</span><button class="domain-button ${category === 'all' ? 'active' : ''}" data-category="all">Overview</button>${domains}<p>Each achievement grows through Bronze, Silver and Gold.</p><button class="button secondary" data-action="${state.demo ? 'install' : state.settings.watching ? 'preview' : 'watch'}">${state.demo ? 'Get TokenGo ↗' : state.settings.watching ? 'Preview an unlock' : 'Start collecting'}</button></aside></div>`;
 }
 function filters() {
   return `<div class="toolbar"><div class="tabs" role="tablist" aria-label="Achievement status">${[
@@ -185,7 +186,7 @@ function filters() {
     )
     .join(
       '',
-    )}</div><div class="filter-controls"><label class="search-wrap"><span>⌕</span><input id="search" type="search" placeholder="Find an achievement…" aria-label="Search achievements" value="${esc(query)}"></label><select id="rarity" aria-label="Filter medal level"><option value="all">All medals</option>${Object.entries(
+    )}</div><div class="filter-controls"><label class="search-wrap"><span>${icon('search')}</span><input id="search" type="search" placeholder="Search" aria-label="Search achievements" value="${esc(query)}"></label><select id="rarity" aria-label="Filter medal level"><option value="all">All medals</option>${Object.entries(
     rarityNames,
   )
     .map(
@@ -229,7 +230,7 @@ function renderResults() {
 }
 
 function hidden() {
-  return `<div class="page-heading"><h1>Some surprises are better left undiscovered.</h1><p>24 hidden achievements in your everyday work. Titles and conditions stay secret until unlocked.</p></div>${filters()}<div id="results"></div>`;
+  return `<div class="page-heading"><h1>Feats of strength</h1><p>24 hidden achievements in your everyday work. Titles and conditions stay secret until unlocked.</p></div>${filters()}<div id="results"></div>`;
 }
 function cabinet() {
   return collection();
@@ -238,7 +239,7 @@ function statistics() {
   return renderStatistics(state, statsOptions);
 }
 function activity() {
-  return `<div class="page-heading"><h1>A timeline of your little victories.</h1><p>Unlock times and sources, stored only on your device.</p></div>${
+  return `<div class="page-heading"><h1>Unlock history</h1><p>Unlock times and sources, stored only on your device.</p></div>${
     earned().length
       ? earned()
           .sort((a, b) => b.award.at.localeCompare(a.award.at))
@@ -254,13 +255,14 @@ function activity() {
   }${earned().length > 100 ? '<p class="muted">Showing your latest 100 unlocks. Export all records from Settings.</p>' : ''}`;
 }
 function settings() {
-  return `<div class="page-heading"><h1>Surprises, at your pace.</h1><p>No account needed. Nothing uploads automatically. You decide when to share.</p></div><section class="settings-panel"><h2>Background & notifications</h2><div class="setting-row"><div>Collect in the background<p>Incrementally checks Codex logs every 5 seconds. The tray companion can keep collecting when the window is closed.</p></div><label class="switch"><input id="watch-toggle" type="checkbox" aria-label="Collect in the background" ${state.settings.watching ? 'checked' : ''}></label></div><div class="setting-row"><div>Quiet mode<p>Keep collecting without popups.</p></div><label class="switch"><input id="quiet-toggle" type="checkbox" aria-label="Quiet mode" ${state.settings.quiet ? 'checked' : ''}></label></div><div class="setting-row"><div>Launch at login<p>Off by default. Enable after installing the packaged desktop app.</p></div><label class="switch"><input id="startup-toggle" type="checkbox" aria-label="Launch at login" ${state.startup ? 'checked' : ''}></label></div><div class="setting-row"><div>Unlock cards<p>Preview a card using an earned achievement. If none are available, a labeled example is shown.</p></div><button class="button secondary" data-action="preview">Preview card</button></div></section><section class="settings-panel"><h2>Records & trust</h2><div class="setting-row"><div>Discover past achievements<p>Read-only scan of local Codex logs. Historical discoveries are labeled and do not flood you with popups.</p></div><button class="button secondary" data-action="scan">Scan history</button></div><div class="setting-row"><div>Export achievements<p>Export badge IDs, unlock times and numeric evidence. No conversations, code, or paths.</p></div><button class="button secondary" data-action="export">Export JSON</button></div><div class="setting-row"><div>Local records, not official certification<p>Integrity checks detect basic edits. A device owner can still forge data; local badges are not certified competitive results.</p></div></div><div class="setting-row"><div>Latest scan<p>${state.lastScan ? `${new Date(state.lastScan.at).toLocaleString(formatLocale())} · ${state.lastScan.files} changed files · ${state.lastScan.events} normalized events · ${state.lastScan.forksSkipped} fork files skipped` : 'Your Codex logs have not been read. Scanning begins only when you choose to start.'}</p></div></div></section>`;
+  return `<div class="page-heading"><h1>Settings</h1><p>No account needed. Nothing uploads automatically. You decide when to share.</p></div><section class="settings-panel"><h2>Background & notifications</h2><div class="setting-row"><div>Collect in the background<p>Incrementally checks Codex logs every 5 seconds. The tray companion can keep collecting when the window is closed.</p></div><label class="switch"><input id="watch-toggle" type="checkbox" aria-label="Collect in the background" ${state.settings.watching ? 'checked' : ''}></label></div><div class="setting-row"><div>Quiet mode<p>Keep collecting without popups.</p></div><label class="switch"><input id="quiet-toggle" type="checkbox" aria-label="Quiet mode" ${state.settings.quiet ? 'checked' : ''}></label></div><div class="setting-row"><div>Launch at login<p>Off by default. Enable after installing the packaged desktop app.</p></div><label class="switch"><input id="startup-toggle" type="checkbox" aria-label="Launch at login" ${state.startup ? 'checked' : ''}></label></div><div class="setting-row"><div>Unlock cards<p>Preview a card using an earned achievement. If none are available, a labeled example is shown.</p></div><button class="button secondary" data-action="preview">Preview card</button></div></section><section class="settings-panel"><h2>Records & trust</h2><div class="setting-row"><div>Discover past achievements<p>Read-only scan of local Codex logs. Historical discoveries are labeled and do not flood you with popups.</p></div><button class="button secondary" data-action="scan">Scan history</button></div><div class="setting-row"><div>Export achievements<p>Export badge IDs, unlock times and numeric evidence. No conversations, code, or paths.</p></div><button class="button secondary" data-action="export">Export JSON</button></div><div class="setting-row"><div>Local records, not official certification<p>Integrity checks detect basic edits. A device owner can still forge data; local badges are not certified competitive results.</p></div></div><div class="setting-row"><div>Latest scan<p>${state.lastScan ? `${new Date(state.lastScan.at).toLocaleString(formatLocale())} · ${state.lastScan.files} changed files · ${state.lastScan.events} normalized events · ${state.lastScan.forksSkipped} fork files skipped` : 'Your Codex logs have not been read. Scanning begins only when you choose to start.'}</p></div></div></section>`;
 }
 function community() {
-  return `<section class="settings-panel"><h2>Community unlock rates</h2><p>${state.community?.participants || 0} voluntary participants. These are community sample rates, never global rates. Snapshot: ${state.community?.updatedAt ? new Date(state.community.updatedAt).toLocaleDateString(formatLocale()) : 'Not yet published'}.</p><p>Contribute only a random participant ID and earned badge IDs with medal levels. No prompts, code, usage totals or paths. GitHub submissions are public and linked to your GitHub account. Participation is optional; nothing is sent automatically.</p><button class="button" data-action="community-report" ${state.demo ? 'disabled' : ''}>Preview my contribution</button> <button class="button secondary" data-action="community-import" ${state.demo ? 'disabled' : ''}>Import sample file</button><pre id="community-preview" class="code-sample"></pre><div id="community-consent" hidden><label><input type="checkbox" id="consent-check"> I understand that my GitHub account and this report will be public.</label><p><button class="button secondary" data-action="community-copy">Copy report</button> <button class="button" data-action="community-submit">Open GitHub submission ↗</button></p><p>Paste and review the report on GitHub. You publish it yourself. Maintainer-approved reports are aggregated; reports are self-reported, not certified.</p></div></section><div class="page-heading"><h1>Dream up the next easter egg.</h1><p>An open workshop for unexpected achievements. Add a badge or build something of your own.</p></div><div class="community-grid"><article class="community-card"><span class="symbol">✧</span><h3>Contribute a badge</h3><p>A fun title and an observable rule. JSON packs need no engine changes and execute no arbitrary code.</p></article><article class="community-card"><span class="symbol">◇</span><h3>Make it look like you</h3><p>Design badge art, share cards and showcase themes. Every adventure can have its own look.</p></article><article class="community-card"><span class="symbol">⌘</span><h3>Build what comes next</h3><p>Write local adapters for other agents or explicitly opt-in community extensions.</p></article></div><section class="settings-panel" style="margin-top:24px"><div class="section-header"><h2>A badge starts here</h2><button class="button secondary" data-action="install">Join us on GitHub ↗</button></div><pre class="code-sample">${esc(JSON.stringify({ id: 'community.still-working', name: 'Still Grinding. I’m AFK.', description: 'Agent active run reached 2 hours.', category: 'hidden', rarity: 'bronze', hidden: true, icon: 'hourglass', conditions: [{ metric: 'run.max_minutes', gte: 120 }] }, null, 2))}</pre><p class="muted" style="font-size:12px;line-height:1.8">MIT licensed · Auditable rules · Built to extend<br>Share links point to the open-source project. No personal tracking codes. No paid server required.</p></section>`;
+  return `<section class="settings-panel"><h2>Community unlock rates</h2><p>${state.community?.participants || 0} voluntary participants. These are community sample rates, never global rates. Snapshot: ${state.community?.updatedAt ? new Date(state.community.updatedAt).toLocaleDateString(formatLocale()) : 'Not yet published'}.</p><p>Contribute only a random participant ID and earned badge IDs with medal levels. No prompts, code, usage totals or paths. GitHub submissions are public and linked to your GitHub account. Participation is optional; nothing is sent automatically.</p><button class="button" data-action="community-report" ${state.demo ? 'disabled' : ''}>Preview my contribution</button> <button class="button secondary" data-action="community-import" ${state.demo ? 'disabled' : ''}>Import sample file</button><pre id="community-preview" class="code-sample"></pre><div id="community-consent" hidden><label><input type="checkbox" id="consent-check"> I understand that my GitHub account and this report will be public.</label><p><button class="button secondary" data-action="community-copy">Copy report</button> <button class="button" data-action="community-submit">Open GitHub submission ↗</button></p><p>Paste and review the report on GitHub. You publish it yourself. Maintainer-approved reports are aggregated; reports are self-reported, not certified.</p></div></section><div class="page-heading"><h1>Community</h1><p>An open workshop for unexpected achievements. Add a badge or build something of your own.</p></div><div class="community-grid"><article class="community-card"><h3>Contribute a badge</h3><p>A fun title and an observable rule. JSON packs need no engine changes and execute no arbitrary code.</p></article><article class="community-card"><h3>Make it look like you</h3><p>Design badge art, share cards and showcase themes. Every adventure can have its own look.</p></article><article class="community-card"><h3>Build what comes next</h3><p>Write local adapters for other agents or explicitly opt-in community extensions.</p></article></div><section class="settings-panel" style="margin-top:24px"><div class="section-header"><h2>A badge starts here</h2><button class="button secondary" data-action="install">Join us on GitHub ↗</button></div><pre class="code-sample">${esc(JSON.stringify({ id: 'community.still-working', name: 'Still Grinding. I’m AFK.', description: 'Agent active run reached 2 hours.', category: 'hidden', rarity: 'bronze', hidden: true, icon: 'hourglass', conditions: [{ metric: 'run.max_minutes', gte: 120 }] }, null, 2))}</pre><p class="muted" style="font-size:12px;line-height:1.8">MIT licensed · Auditable rules · Built to extend<br>Share links point to the open-source project. No personal tracking codes. No paid server required.</p></section>`;
 }
 function render() {
   updateChrome();
+  document.querySelectorAll('[data-icon]').forEach((el) => (el.innerHTML = icon(el.dataset.icon)));
   $('#content').innerHTML = {
     collection,
     hidden,
@@ -289,7 +291,7 @@ function showDetail(id) {
   if (!selected) return;
   const a = selected;
   $('#detail-body').innerHTML =
-    `<div class="detail-badge">${badge(a.icon, a.rarity, a.hidden && a.locked)}</div><span class="rarity-tag" style="justify-content:center;--rarity:${palette[a.rarity][0]}">${rarityNames[a.rarity]}${a.hidden ? ' · Hidden achievement' : ''}</span><h2 class="detail-title">${esc(a.name)}</h2><p class="detail-desc">${esc(a.locked ? a.description : achievementFact(a))}</p>${medals(a)}${communityRate(a)}<div class="detail-conditions">${a.hidden && a.locked ? 'This secret is still out there. Stay curious and keep doing your thing.' : `<strong>${a.medalLevel < 3 ? 'Next medal requirement' : 'Gold requirement'}</strong><br>${a.conditions.map((c) => `${esc(c.metric)}：${fmt(c.current)} / ${fmt(c.gte)}`).join('<br>')}${a.award ? `<br><br>${sourceNames[a.award.source] || 'Local record'} · ${new Date(a.award.at).toLocaleString(formatLocale())}` : ''}`}</div>${!a.locked ? `<div class="detail-actions"><button class="button secondary" data-action="pin">${pins().includes(a.id) ? 'Unpin from showcase' : '✦ Pin to showcase'}</button><button class="button" data-action="share">Share this moment ↗</button></div>` : ''}<p class="detail-footnote">${state.demo ? 'Demo data · not a real achievement' : 'Local record · not officially certified'}<br>Evidence stays on your device. No automatic upload.</p>`;
+    `<div class="detail-badge">${badge(a.icon, a.rarity, a.hidden && a.locked)}</div><span class="rarity-tag" style="justify-content:center;--rarity:${palette[a.rarity][0]}">${rarityNames[a.rarity]}${a.hidden ? ' · Hidden achievement' : ''}</span><h2 class="detail-title">${esc(a.name)}</h2><p class="detail-desc">${esc(a.locked ? a.description : achievementFact(a))}</p>${medals(a)}${communityRate(a)}<div class="detail-conditions">${a.hidden && a.locked ? 'This secret is still out there. Stay curious and keep doing your thing.' : `<strong>${a.medalLevel < 3 ? 'Next medal requirement' : 'Gold requirement'}</strong><br>${a.conditions.map((c) => `${esc(c.metric)}: ${fmt(c.current)} / ${fmt(c.gte)}`).join('<br>')}${a.award ? `<br><br>${sourceNames[a.award.source] || 'Local record'} · ${new Date(a.award.at).toLocaleString(formatLocale())}` : ''}`}</div>${!a.locked ? `<div class="detail-actions"><button class="button secondary" data-action="pin">${pins().includes(a.id) ? 'Unpin from showcase' : 'Pin to showcase'}</button><button class="button" data-action="share">Share this moment ↗</button></div>` : ''}<p class="detail-footnote">${state.demo ? 'Demo data · not a real achievement' : 'Local record · not officially certified'}<br>Evidence stays on your device. No automatic upload.</p>`;
   translateDOM($('#detail-dialog'));
   if (!$('#detail-dialog').open) $('#detail-dialog').showModal();
 }
@@ -315,24 +317,12 @@ async function drawShare(awards) {
   ctx.fillText = function (text, ...args) {
     return baseFill.call(this, t(text), ...args);
   };
-  ctx.fillStyle = '#132033';
+  ctx.fillStyle = '#141516';
   ctx.fillRect(0, 0, 1200, 675);
-  const grad = ctx.createRadialGradient(900, 230, 10, 900, 230, 620);
-  grad.addColorStop(0, '#36445b');
-  grad.addColorStop(1, '#142033');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 1200, 675);
-  ctx.strokeStyle = '#7d8da233';
-  ctx.lineWidth = 1;
-  for (const radius of [180, 245, 310]) {
-    ctx.beginPath();
-    ctx.arc(930, 270, radius, 0, Math.PI * 2);
-    ctx.stroke();
-  }
-  ctx.fillStyle = '#e8cc92';
-  ctx.font = 'bold 30px -apple-system, sans-serif';
-  ctx.fillText('✦ TokenGo', 60, 65);
-  ctx.fillStyle = '#9fb0c7';
+  ctx.fillStyle = '#ededeb';
+  ctx.font = '500 30px -apple-system, sans-serif';
+  ctx.fillText('TokenGo', 60, 65);
+  ctx.fillStyle = '#a3a4a6';
   ctx.font = '18px -apple-system, sans-serif';
   ctx.fillText(
     isDemoShare(awards, state.demo)
@@ -347,9 +337,18 @@ async function drawShare(awards) {
     await img.decode();
     ctx.drawImage(img, x, y, w, (w * 156) / 140);
   };
+  const drawMedalTrack = (a, x, y) => {
+    const grades = ['bronze', 'silver', 'gold'];
+    const level = a.medalLevel || grades.indexOf(a.rarity) + 1;
+    grades.forEach((grade, i) => {
+      ctx.fillStyle = i < level ? palette[grade][0] : '#3a3b3d';
+      ctx.fillRect(x + i * 28, y, 20, 3);
+    });
+  };
   if (awards.length === 1) {
     const a = awards[0];
     await drawBadge(a, 815, 145, 250);
+    drawMedalTrack(a, 902, 460);
     ctx.fillStyle = palette[a.rarity][0];
     ctx.font = '20px -apple-system, sans-serif';
     ctx.fillText(
@@ -357,13 +356,13 @@ async function drawShare(awards) {
       60,
       218,
     );
-    ctx.fillStyle = '#f0f3f8';
-    ctx.font = 'bold 54px -apple-system, sans-serif';
+    ctx.fillStyle = '#ededeb';
+    ctx.font = '500 48px -apple-system, sans-serif';
     ctx.fillText(a.name, 56, 302, 720);
-    ctx.fillStyle = '#b0bed2';
+    ctx.fillStyle = '#a3a4a6';
     ctx.font = '24px -apple-system, sans-serif';
     wrapText(ctx, t(achievementFact(a)), 60, 364, 680, 38);
-    ctx.fillStyle = '#8da1bb';
+    ctx.fillStyle = '#a3a4a6';
     ctx.font = '18px -apple-system, sans-serif';
     ctx.fillText(
       `${sourceNames[a.award.source] || 'Local record'} · ${new Date(a.award.at).toLocaleDateString(formatLocale())}`,
@@ -371,9 +370,9 @@ async function drawShare(awards) {
       470,
     );
   } else {
-    ctx.fillStyle = '#f0f3f8';
-    ctx.font = 'bold 34px -apple-system, sans-serif';
-    ctx.fillText('This is my adventure.', 60, 162);
+    ctx.fillStyle = '#ededeb';
+    ctx.font = '500 32px -apple-system, sans-serif';
+    ctx.fillText('My Codex achievements', 60, 162);
     const width = 1080 / awards.length;
     for (let i = 0; i < awards.length; i++) {
       const a = awards[i],
@@ -383,24 +382,25 @@ async function drawShare(awards) {
       ctx.font = '16px -apple-system, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(a.name, x + width / 2, 392, width - 12);
-      ctx.fillStyle = '#94a7c1';
+      ctx.fillStyle = '#a3a4a6';
       ctx.font = '14px -apple-system, sans-serif';
       ctx.fillText(rarityNames[a.rarity], x + width / 2, 425);
       ctx.textAlign = 'left';
+      drawMedalTrack(a, x + width / 2 - 38, 450);
     }
   }
-  ctx.strokeStyle = '#506078';
+  ctx.strokeStyle = '#37383a';
   ctx.beginPath();
   ctx.moveTo(60, 540);
   ctx.lineTo(1140, 540);
   ctx.stroke();
-  ctx.fillStyle = '#d1dfed';
+  ctx.fillStyle = '#ededeb';
   ctx.font = '20px -apple-system, sans-serif';
-  ctx.fillText('What is your Codex hiding?', 60, 588);
-  ctx.fillStyle = '#a3b4cb';
+  ctx.fillText('Collect your own Codex achievements', 60, 588);
+  ctx.fillStyle = '#a3a4a6';
   ctx.font = '17px -apple-system, sans-serif';
   ctx.fillText('github.com/DragonYJ/TokenGo', 60, 623);
-  ctx.fillStyle = '#dec48f';
+  ctx.fillStyle = '#a3a4a6';
   ctx.textAlign = 'right';
   ctx.fillText('Offline achievements. Free & open source.', 1140, 608);
   ctx.textAlign = 'left';

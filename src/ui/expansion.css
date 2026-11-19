@@ -12,8 +12,8 @@
   position: sticky;
   top: 24px;
   padding: 22px 16px;
-  background: #172438;
-  border: 1px solid #344158;
+  background: #232323;
+  border: 1px solid #404040;
   border-radius: 16px;
 }
 .section-kicker {
@@ -31,7 +31,7 @@
   border-radius: 8px;
   margin-top: 6px;
   background: transparent;
-  color: #b2c1d4;
+  color: #bfbfbf;
   border: 1px solid transparent;
 }
 .domain-button > span {
@@ -55,7 +55,7 @@
 .domain-nav p {
   font-size: 11px;
   line-height: 1.8;
-  color: #8e9eb5;
+  color: #9c9c9c;
   margin: 22px 0;
 }
 .domain-nav .button {
@@ -65,7 +65,7 @@
 .cabinet-stage {
   padding: 28px;
   margin-bottom: 30px;
-  background: radial-gradient(ellipse at top, #36435a55, transparent 70%), #142033;
+  background: radial-gradient(ellipse at top, #42424255, transparent 70%), #1f1f1f;
   border: 1px solid #71634566;
   box-shadow: inset 0 1px #d6ba7533;
 }
@@ -74,7 +74,7 @@
 }
 .cabinet-stage p {
   font-size: 12px;
-  color: #9faec2;
+  color: #acacac;
 }
 .cabinet-slots {
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -83,13 +83,13 @@
 .cabinet-slot {
   min-height: 245px;
   padding: 16px 12px;
-  border: 1px dashed #52617666;
+  border: 1px dashed #5f5f5f66;
   gap: 9px;
   justify-content: center;
 }
 .cabinet-slot.filled {
   border: 1px solid #b89a5c33;
-  background: linear-gradient(180deg, #ffffff03, #090f1b55);
+  background: linear-gradient(180deg, #ffffff03, #0f0f0f55);
 }
 .showcase-medal {
   display: flex;
@@ -98,7 +98,7 @@
   gap: 8px;
   background: none;
   border: 0;
-  color: #e8eaf1;
+  color: #eaeaea;
   width: 100%;
   font-size: 12px;
 }
@@ -109,7 +109,7 @@
 }
 .cabinet-slot small {
   font-size: 10px;
-  color: #9cabbd;
+  color: #a9a9a9;
   line-height: 1.5;
 }
 .cabinet-slot .progress {
@@ -127,7 +127,7 @@
 }
 .cabinet-slot > strong {
   font-size: 12px;
-  color: #8b9bb1;
+  color: #999999;
 }
 .cabinet-slot > small {
   text-align: center;
@@ -141,13 +141,13 @@
   white-space: nowrap;
 }
 .medal-levels span {
-  color: #6e7b8b;
+  color: #797979;
 }
 .medal-levels .bronze.achieved {
   color: #dca57b;
 }
 .medal-levels .silver.achieved {
-  color: #c4d7ea;
+  color: #d4d4d4;
 }
 .medal-levels .gold.achieved {
   color: #ffe3a1;
@@ -162,7 +162,7 @@
   display: block;
   font-size: 9px;
   line-height: 1.6;
-  color: #8d9cb1;
+  color: #9a9a9a;
   margin-top: 12px;
 }
 .focused-award {
@@ -201,7 +201,7 @@
   max-width: 760px;
 }
 .settings-panel > p {
-  color: #a8b7cb;
+  color: #b5b5b5;
   font-size: 13px;
   line-height: 1.8;
 }
@@ -209,9 +209,9 @@
   font-size: 12px;
 }
 #language {
-  background: #182639;
-  border: 1px solid #3a465c;
-  color: #b9c9dd;
+  background: #242424;
+  border: 1px solid #454545;
+  color: #c7c7c7;
   border-radius: 6px;
   padding: 7px;
 }
@@ -233,22 +233,22 @@
   display: flex;
   padding: 4px;
   gap: 3px;
-  border: 1px solid #344158;
+  border: 1px solid #404040;
   border-radius: 8px;
-  background: #152136;
+  background: #202020;
 }
 .period-tabs button,
 .segmented button {
   background: none;
   border: 0;
-  color: #99abc3;
+  color: #a9a9a9;
   padding: 9px 14px;
   border-radius: 5px;
   font-size: 11px;
 }
 .period-tabs .active,
 .segmented .active {
-  background: #3c4c63;
+  background: #4a4a4a;
   color: #fff;
 }
 .metric-grid {
@@ -258,8 +258,8 @@
   margin-bottom: 24px;
 }
 .metric-card {
-  background: #19263b;
-  border: 1px solid #364157;
+  background: #252525;
+  border: 1px solid #404040;
   border-radius: 12px;
   padding: 22px;
   display: flex;
@@ -269,7 +269,7 @@
 }
 .metric-card > span {
   font-size: 12px;
-  color: #a6b7ce;
+  color: #b5b5b5;
 }
 .metric-card strong {
   font-size: 32px;
@@ -278,7 +278,7 @@
 .metric-card small {
   font-size: 10px;
   line-height: 1.6;
-  color: #8395ae;
+  color: #939393;
 }
 .metric-card .metric-symbol {
   position: absolute;
@@ -297,8 +297,8 @@
   grid-template-columns: 1fr 1fr;
 }
 .analytics-panel {
-  border: 1px solid #354158;
-  background: #172438;
+  border: 1px solid #404040;
+  background: #232323;
   border-radius: 14px;
   padding: 24px;
   min-width: 0;
@@ -311,7 +311,7 @@
 .panel-footnote,
 .statistics-method {
   font-size: 11px;
-  color: #8597b0;
+  color: #959595;
   line-height: 1.7;
 }
 .panel-subtitle {
@@ -330,7 +330,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  color: #71839c;
+  color: #818181;
   font-size: 9px;
   padding-bottom: 0;
 }
@@ -341,8 +341,8 @@
   gap: 3px;
   background: repeating-linear-gradient(
     to top,
-    #8498b51a 0,
-    #8498b51a 1px,
+    #9696961a 0,
+    #9696961a 1px,
     transparent 1px,
     transparent 50%
   );
@@ -365,14 +365,14 @@
 }
 .chart-day:hover span,
 .chart-day.selected span {
-  background: #a9c9ff;
+  background: #c6c6c6;
   opacity: 1;
 }
 .chart-dates {
   display: flex;
   justify-content: space-between;
   font-size: 9px;
-  color: #7e91aa;
+  color: #8f8f8f;
   margin: 12px 0 0 30px;
 }
 .token-ring {
@@ -381,10 +381,10 @@
   margin: 20px auto;
   border-radius: 50%;
   padding: 12px;
-  background: conic-gradient(#b7cfa3 var(--cached), #36475e 0);
+  background: conic-gradient(#b7cfa3 var(--cached), #454545 0);
 }
 .token-ring > div {
-  background: #172438;
+  background: #232323;
   border-radius: 50%;
   height: 100%;
   display: flex;
@@ -398,14 +398,14 @@
 }
 .token-ring span {
   font-size: 10px;
-  color: #96a9c1;
+  color: #a7a7a7;
 }
 .token-legend {
   display: flex;
   flex-direction: column;
   gap: 10px;
   font-size: 11px;
-  color: #acbdd2;
+  color: #bbbbbb;
 }
 .token-legend span {
   display: flex;
@@ -414,7 +414,7 @@
 }
 .token-legend b {
   margin-left: auto;
-  color: #e4eaf3;
+  color: #e9e9e9;
 }
 .token-legend i {
   height: 7px;
@@ -423,7 +423,7 @@
   background: #d4bd8d;
 }
 .token-legend .legend-output {
-  background: #9ab7df;
+  background: #b4b4b4;
 }
 .token-legend .legend-cache {
   background: #b7cfa3;
@@ -441,11 +441,11 @@
 .data-table td,
 .data-table th {
   padding: 14px 9px;
-  border-bottom: 1px solid #879bb51c;
+  border-bottom: 1px solid #9999991c;
 }
 .data-table th {
   font-size: 9px;
-  color: #8f9fb6;
+  color: #9d9d9d;
   font-weight: 400;
 }
 .data-table td:first-child,
@@ -455,7 +455,7 @@
 .table-secondary {
   display: block;
   font-size: 9px;
-  color: #778ba7;
+  color: #898989;
   margin-top: 6px;
 }
 .table-emphasis {
@@ -463,7 +463,7 @@
 }
 .table-empty {
   padding: 35px !important;
-  color: #8194af;
+  color: #929292;
   text-align: center !important;
   font-size: 12px;
 }
@@ -489,25 +489,25 @@
 }
 .tool-row > span {
   width: 70px;
-  color: #adbed2;
+  color: #bcbcbc;
 }
 .tool-row > div {
   flex: 1;
   height: 6px;
-  background: #293950;
+  background: #373737;
   border-radius: 6px;
 }
 .tool-row i {
   display: block;
   height: 6px;
-  background: #819aba;
+  background: #979797;
   border-radius: 6px;
 }
 .tool-row b {
   width: 32px;
   text-align: right;
   font-weight: 400;
-  color: #b7c7dc;
+  color: #c5c5c5;
 }
 .rhythm-panel {
   display: flex;
@@ -530,13 +530,13 @@
 }
 .hour-bars span {
   display: block;
-  background: #7d96b4;
+  background: #939393;
   border-radius: 3px;
 }
 .hour-bars small {
   height: 12px;
   font-size: 9px;
-  color: #8194b0;
+  color: #929292;
 }
 .statistics-method {
   padding: 10px 0 30px;
@@ -562,7 +562,7 @@
   align-items: center;
   border: 1px solid #c7a56f99;
   border-radius: 12px;
-  background: radial-gradient(ellipse at top left, #50452c66, transparent 65%), #152135;
+  background: radial-gradient(ellipse at top left, #50452c66, transparent 65%), #202020;
   box-shadow: 0 12px 40px #0008;
   position: relative;
   overflow: hidden;
@@ -597,27 +597,27 @@
 }
 .toast-fact {
   font-size: 11px;
-  color: #b6c4d7;
+  color: #c2c2c2;
   line-height: 1.5;
 }
 .toast-share-icons {
   display: flex;
   gap: 7px;
-  border-left: 1px solid #8d9db52b;
+  border-left: 1px solid #9b9b9b2b;
   padding-left: 12px;
 }
 .toast-platform {
   width: 48px;
   height: 62px;
-  border: 1px solid #52637a;
-  background: #27364e;
+  border: 1px solid #616161;
+  background: #353535;
   border-radius: 9px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 7px;
-  color: #edf2f9;
+  color: #f1f1f1;
 }
 .toast-platform svg {
   width: 23px;
@@ -632,15 +632,15 @@
   color: #ffb59c;
 }
 .toast-platform:hover {
-  background: #465871;
-  transform: translateY(-2px);
+  background: #565656;
+  transform: none;
 }
 .toast-dismiss {
   right: 6px;
   top: 3px;
   background: none;
   border: 0;
-  color: #a4b2c5;
+  color: #b0b0b0;
   position: absolute;
   font-size: 16px;
   z-index: 2;
@@ -648,7 +648,7 @@
 .toast-demo,
 .toast-batch {
   font-size: 9px;
-  color: #8fa2ba;
+  color: #a0a0a0;
 }
 .toast-demo {
   position: static;

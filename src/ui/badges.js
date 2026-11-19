@@ -42,7 +42,7 @@ export function glyph(icon = 'trophy', color = 'currentColor') {
 }
 export function badge(icon = 'trophy', rarity = 'silver', locked = false) {
   const [light, dark] = palette[rarity] || palette.silver;
-  const color = locked ? '#647183' : light,
-    shade = locked ? '#263141' : dark;
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 156" fill="none" aria-hidden="true"><path d="m32 112-4 38 25-12 17 11 17-11 25 12-4-38" fill="${shade}" stroke="${color}" stroke-opacity=".25"/><path d="M70 5 123 34v61l-53 32-53-32V34L70 5Z" fill="${shade}" stroke="${color}" stroke-width="2"/><path d="m70 13 46 26v52l-46 28-46-28V39l46-26Z" fill="#111c2e" stroke="${color}" stroke-opacity=".4"/><path d="m70 21 38 22v44l-38 23-38-23V43l38-22Z" fill="${shade}" fill-opacity=".2"/><path d="m31 42 39-23 39 23M31 87l39 24 39-24" stroke="${color}" stroke-opacity=".3"/><g transform="translate(38 34)" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="${paths[locked ? 'lock' : icon] || paths.trophy}"/></g><path d="m70 116 3 5-3 5-3-5 3-5Z" fill="${color}"/></svg>`;
+  const color = locked ? '#85868a' : light,
+    shade = locked ? '#252629' : dark;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 156" fill="none" aria-hidden="true"><path d="m32 112-4 38 25-12 17 11 17-11 25 12-4-38" fill="${shade}" stroke="${color}" stroke-opacity=".25"/><path d="M70 5 123 34v61l-53 32-53-32V34L70 5Z" fill="${shade}" stroke="${color}" stroke-width="2"/><path d="m70 13 46 26v52l-46 28-46-28V39l46-26Z" fill="#18191b" stroke="${color}" stroke-opacity=".4"/><path d="m70 21 38 22v44l-38 23-38-23V43l38-22Z" fill="${shade}" fill-opacity=".2"/><path d="m31 42 39-23 39 23M31 87l39 24 39-24" stroke="${color}" stroke-opacity=".3"/><g transform="translate(38 34)" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="${paths[locked ? 'lock' : icon] || paths.trophy}"/></g><path d="m70 116 3 5-3 5-3-5 3-5Z" fill="${color}"/></svg>`;
 }

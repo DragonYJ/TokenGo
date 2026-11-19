@@ -7,34 +7,42 @@
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"
     />
-    <title>TokenGo — Every little adventure counts</title>
+    <title>TokenGo — Local achievements for Codex</title>
     <link rel="icon" href="../../assets/icon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="expansion.css" />
+    <link rel="stylesheet" href="theme.css" />
   </head>
   <body>
     <div class="titlebar"></div>
     <aside class="sidebar">
       <a class="brand" href="#collection" aria-label="TokenGo home"
-        ><span class="brand-mark">✦</span
+        ><span class="brand-mark" data-icon="medal"></span
         ><span
-          >Token<span class="brand-go">Go</span><small>Every little adventure counts.</small></span
+          >Token<span class="brand-go">Go</span><small>Local achievements for Codex</small></span
         ></a
       >
-      <div class="nav-caption">Your adventure</div>
+      <div class="nav-caption">Collection</div>
       <nav aria-label="Main navigation">
         <button data-view="collection" class="nav-item active">
-          <span>◇</span> Achievement cabinet <b id="nav-total">1,224</b></button
+          <span data-icon="cabinet"></span> Achievements <b id="nav-total">1,224</b></button
         ><button data-view="hidden" class="nav-item">
-          <span>✧</span> Feats of strength <i class="tiny-dot"></i></button
-        ><button data-view="cabinet" class="nav-item"><span>▦</span> My showcase</button
-        ><button data-view="statistics" class="nav-item"><span>◷</span> Statistics</button
-        ><button data-view="activity" class="nav-item"><span>◷</span> Unlock history</button>
+          <span data-icon="lock"></span> Feats of strength</button
+        ><button data-view="cabinet" class="nav-item">
+          <span data-icon="medal"></span> My showcase</button
+        ><button data-view="statistics" class="nav-item">
+          <span data-icon="chart"></span> Statistics</button
+        ><button data-view="activity" class="nav-item">
+          <span data-icon="history"></span> Unlock history
+        </button>
       </nav>
-      <div class="nav-caption second">Make it yours</div>
+      <div class="nav-caption second">Community</div>
       <nav aria-label="More">
-        <button data-view="community" class="nav-item"><span>⌘</span> Community</button
-        ><button data-view="settings" class="nav-item"><span>⚙</span> Settings</button>
+        <button data-view="community" class="nav-item">
+          <span data-icon="community"></span> Community</button
+        ><button data-view="settings" class="nav-item">
+          <span data-icon="settings"></span> Settings
+        </button>
       </nav>
       <div class="sidebar-bottom">
         <div class="privacy-seal">
@@ -65,15 +73,15 @@
             title="Preview achievement card"
             aria-label="Preview achievement card"
           >
-            ♧
+            <span data-icon="preview"></span>
           </button>
         </div>
       </header>
       <div id="banner" class="banner" hidden></div>
       <div id="content"></div>
       <footer>
-        <span>TokenGo <span class="muted">/</span> A badge for every curious mind.</span
-        ><span>Local first <span class="footer-star">✦</span> Community built</span>
+        <span>TokenGo <span class="muted">/</span> Local achievements for Codex</span
+        ><span>Local first <span class="footer-star">·</span> Community built</span>
       </footer>
     </main>
     <dialog id="detail-dialog" aria-label="Achievement details">
@@ -82,7 +90,7 @@
     </dialog>
     <dialog id="share-dialog" aria-label="Share achievement">
       <button class="dialog-close" data-close aria-label="Close">×</button>
-      <h2>This one is worth sharing.</h2>
+      <h2>Share achievement</h2>
       <p class="muted">
         Generated on your device. External platforms open only when you choose to share.
       </p>
